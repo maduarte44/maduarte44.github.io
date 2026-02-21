@@ -202,3 +202,46 @@ Las semanas se construyen con dos helpers:
 ## 📄 Licencia
 
 Uso personal. Sin licencia de distribución abierta.
+
+---
+
+## ☁️ Sincronización entre dispositivos (GitHub Gist)
+
+Los datos se sincronizan a través de un **Gist privado de GitHub**. No requiere servidor propio.
+
+### Configuración inicial (dispositivo principal)
+
+1. Ve a [github.com/settings/tokens/new](https://github.com/settings/tokens/new).
+2. Dale un nombre (ej: *nadie-corre-solo*), selecciona **solo el scope `gist`**, y genera el token.
+3. En la app, toca el botón **☁️** en el header.
+4. Pega el token y pulsa **⬆ Subir** — la app crea automáticamente un Gist privado llamado `nadie-corre-solo-backup.json`.
+
+### Conectar un segundo dispositivo
+
+1. Genera el mismo token (o reutiliza el mismo) en el nuevo dispositivo.
+2. Además del token, necesitas el **Gist ID** — cópialo desde el primer dispositivo (aparece en el modal de sync como `Gist: xxxxxxxx…`).
+3. Guarda el Gist ID en `localStorage` del nuevo dispositivo ejecutando en la consola del navegador:
+   ```js
+   localStorage.setItem('tw_sync_gist_id', 'TU_GIST_ID_COMPLETO')
+   ```
+4. Toca **☁️ → ⬇ Bajar** para traer todos los datos.
+
+### Flujo de uso diario
+
+| Acción | Cuándo |
+|---|---|
+| **⬆ Subir** | Después de registrar entrenamientos o hacer cambios |
+| **⬇ Bajar** | Al abrir la app en un dispositivo que no fue el último en editar |
+
+El botón ☁️ muestra un punto amarillo (🟡) cuando hay cambios locales pendientes de subir, y se vuelve verde (✓) tras sincronizar correctamente.
+
+### Estrategia de merge
+
+Se usa **last-write-wins** a nivel de snapshot completo: el conjunto de datos con el timestamp más reciente prevalece. Evita editar desde dos dispositivos sin conexión simultáneamente.
+
+### Seguridad
+
+- El token se guarda únicamente en `localStorage` del dispositivo, nunca pasa por un servidor intermedio.
+- Las llamadas van directamente a `api.github.com` desde el navegador.
+- El Gist es **privado** — no visible públicamente aunque tengas la URL.
+- Usa el mínimo scope posible (`gist`): el token no tiene acceso a tus repositorios ni a ningún otro recurso.

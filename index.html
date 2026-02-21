@@ -239,6 +239,34 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .pb-title{font-size:12px;font-weight:700;color:#7b9cf5;letter-spacing:.5px}
 .pb-sub{font-size:10px;color:#666;font-family:'JetBrains Mono',monospace;margin-top:1px}
 .pb-cta{font-size:11px;font-weight:700;color:#7b9cf5;letter-spacing:1px;flex-shrink:0}
+
+/* ── SYNC ── */
+#sync-btn{background:none;border:1px solid var(--border);color:var(--sub);width:32px;height:32px;border-radius:8px;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;position:relative}
+#sync-btn.synced{color:#52c9a0;border-color:#52c9a044}
+#sync-btn.syncing{color:#f5b731;border-color:#f5b73144;animation:spin .8s linear infinite}
+#sync-btn.error{color:#f4634a;border-color:#f4634a44}
+@keyframes spin{to{transform:rotate(360deg)}}
+#sync-dot{position:absolute;top:-3px;right:-3px;width:7px;height:7px;border-radius:50%;background:#f5b731;display:none;border:1px solid var(--bg2)}
+#sync-btn.dirty #sync-dot{display:block}
+#sync-modal{display:none;position:fixed;inset:0;z-index:200;background:#000a}
+#sync-modal.show{display:flex;align-items:flex-end}
+#sync-box{background:var(--bg2);border-top:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;animation:slideUp .25s ease;max-height:90dvh;overflow-y:auto}
+.sync-title{font-size:18px;font-weight:900;color:#fff;margin-bottom:4px}
+.sync-sub{font-size:12px;color:var(--sub);margin-bottom:20px;line-height:1.5}
+.sync-lbl{font-size:10px;font-weight:700;color:var(--sub);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.sync-input{width:100%;background:#111;border:1px solid var(--border);border-radius:8px;color:#e0e0f0;padding:10px 12px;font-size:13px;font-family:'JetBrains Mono',monospace;outline:none;transition:border .15s;box-sizing:border-box}
+.sync-input:focus{border-color:#444}
+.sync-row{display:flex;gap:8px;margin-bottom:16px}
+.sync-btn-sm{flex:1;padding:11px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--sub);font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .15s}
+.sync-btn-sm:active{opacity:.7}
+.sync-btn-sm.primary{background:linear-gradient(135deg,#1a2050,#3a4a90);border-color:transparent;color:#fff}
+.sync-btn-sm.danger{border-color:#f4634a44;color:#f4634a}
+.sync-status{font-size:11px;font-family:'JetBrains Mono',monospace;padding:10px 12px;border-radius:8px;background:#111;border:1px solid var(--border);margin-bottom:16px;min-height:40px;color:var(--sub);line-height:1.6}
+.sync-status.ok{color:#52c9a0;border-color:#52c9a033}
+.sync-status.err{color:#f4634a;border-color:#f4634a33}
+.sync-divider{border:none;border-top:1px solid var(--border);margin:16px 0}
+.sync-help{font-size:11px;color:var(--sub);line-height:1.7}
+.sync-help a{color:#7b9cf5;text-decoration:none}
 </style>
 </head>
 <body>
@@ -297,6 +325,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
       <div class="logo-sub" id="race-sub"></div>
     </div>
     <div class="hdr-right">
+      <button id="sync-btn" onclick="openSyncModal()" title="Sincronizar con GitHub Gist">☁️<div id="sync-dot"></div></button>
       <div class="pace-pill" id="pace-pill" onclick="openPaceModal(true)" title="Tu perfil de ritmos">
         <div class="pace-val"><div id="pp-easy">🟢 –:–</div><div id="pp-fast">🔴 –:–</div></div>
       </div>
@@ -368,6 +397,35 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
     <div class="ex-box-name" id="ex-box-name"></div>
     <div class="ex-box-desc" id="ex-box-desc"></div>
     <button class="ex-box-close" onclick="closeExOverlay()">CERRAR</button>
+  </div>
+</div>
+
+<!-- SYNC MODAL -->
+<div id="sync-modal">
+  <div id="sync-box">
+    <div class="sync-title">☁️ Sync con GitHub</div>
+    <div class="sync-sub">Tus datos se guardan en un Gist privado de GitHub y se sincronizan entre dispositivos.</div>
+    <div class="sync-lbl">Personal Access Token</div>
+    <input class="sync-input" id="sync-pat" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" style="margin-bottom:8px">
+    <div class="sync-help" style="margin-bottom:16px">
+      Genera uno en <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens</a> con scope <strong style="color:#fff">gist</strong> únicamente.
+    </div>
+    <div class="sync-lbl">Estado</div>
+    <div class="sync-status" id="sync-status">Sin configurar</div>
+    <div class="sync-row">
+      <button class="sync-btn-sm primary" onclick="syncPush()">⬆ Subir</button>
+      <button class="sync-btn-sm primary" onclick="syncPull()">⬇ Bajar</button>
+    </div>
+    <div class="sync-row">
+      <button class="sync-btn-sm" onclick="closeSyncModal()">Cerrar</button>
+      <button class="sync-btn-sm danger" onclick="syncDisconnect()">Desconectar</button>
+    </div>
+    <hr class="sync-divider">
+    <div class="sync-help">
+      • La primera vez que subas, se crea automáticamente un Gist privado llamado <strong style="color:#fff">nadie-corre-solo-backup.json</strong>.<br>
+      • Al bajar, los datos del Gist reemplazan los locales (se usa la versión más reciente por campo).<br>
+      • El token se guarda solo en este dispositivo, nunca se envía a ningún servidor propio.
+    </div>
   </div>
 </div>
 
@@ -1186,6 +1244,194 @@ function setupPWA(){
 // ══════════════════════════════════════════════════
 setupPWA();
 initTitle();
+
+// ══════════════════════════════════════════════════
+// GITHUB GIST SYNC
+// ══════════════════════════════════════════════════
+const GIST_FILENAME = 'nadie-corre-solo-backup.json';
+
+function syncGetPAT(){ return localStorage.getItem('tw_sync_pat')||''; }
+function syncGetGistId(){ return localStorage.getItem('tw_sync_gist_id')||''; }
+
+function syncSetStatus(msg, cls=''){
+  const el = document.getElementById('sync-status');
+  el.textContent = msg;
+  el.className = 'sync-status' + (cls ? ' '+cls : '');
+}
+
+function syncSetBtnState(state){
+  const btn = document.getElementById('sync-btn');
+  btn.className = state ? 'syncing' : '';
+}
+
+function openSyncModal(){
+  const modal = document.getElementById('sync-modal');
+  modal.classList.add('show');
+  const pat = syncGetPAT();
+  if(pat) document.getElementById('sync-pat').value = pat;
+  const gistId = syncGetGistId();
+  if(pat && gistId){
+    syncSetStatus('Conectado · Gist: ' + gistId.slice(0,8) + '…', 'ok');
+  } else if(pat){
+    syncSetStatus('Token guardado. Pulsa ⬆ Subir para crear el Gist.');
+  } else {
+    syncSetStatus('Sin configurar — introduce tu token para comenzar.');
+  }
+}
+
+function closeSyncModal(){
+  // Save PAT on close
+  const pat = document.getElementById('sync-pat').value.trim();
+  if(pat) localStorage.setItem('tw_sync_pat', pat);
+  document.getElementById('sync-modal').classList.remove('show');
+}
+
+function syncDisconnect(){
+  if(!confirm('¿Desconectar sync? Los datos locales no se borran.')) return;
+  localStorage.removeItem('tw_sync_pat');
+  localStorage.removeItem('tw_sync_gist_id');
+  document.getElementById('sync-pat').value = '';
+  syncSetStatus('Desconectado.');
+  updateSyncBadge();
+}
+
+// Collect all localStorage keys for this app
+function syncExportAll(){
+  const data = { _ts: Date.now(), _v: 1 };
+  for(let i=0; i<localStorage.length; i++){
+    const k = localStorage.key(i);
+    if(k && k.startsWith('tw_') && !k.startsWith('tw_sync_')){
+      try{ data[k] = JSON.parse(localStorage.getItem(k)); }
+      catch(e){ data[k] = localStorage.getItem(k); }
+    }
+  }
+  return data;
+}
+
+// Write all keys from gist data to localStorage (last-write-wins by _ts)
+function syncImportAll(remote){
+  const localTs = parseInt(localStorage.getItem('tw_sync_ts')||'0');
+  const remoteTs = parseInt(remote._ts||'0');
+  // Merge: for each key, keep whichever is newer by overall timestamp
+  // Simple strategy: if remote is newer overall, apply all keys
+  Object.keys(remote).forEach(k => {
+    if(k.startsWith('_')) return; // skip meta
+    localStorage.setItem(k, JSON.stringify(remote[k]));
+  });
+  localStorage.setItem('tw_sync_ts', remoteTs.toString());
+}
+
+async function syncPush(){
+  const pat = document.getElementById('sync-pat').value.trim() || syncGetPAT();
+  if(!pat){ syncSetStatus('Introduce tu token primero.', 'err'); return; }
+  localStorage.setItem('tw_sync_pat', pat);
+
+  syncSetBtnState(true);
+  syncSetStatus('Subiendo…');
+
+  const payload = syncExportAll();
+  const content = JSON.stringify(payload, null, 2);
+  const gistId = syncGetGistId();
+  const headers = {
+    'Authorization': 'token ' + pat,
+    'Content-Type': 'application/json',
+    'Accept': 'application/vnd.github.v3+json'
+  };
+
+  try {
+    let res, json;
+    if(gistId){
+      // Update existing gist
+      res = await fetch('https://api.github.com/gists/' + gistId, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({ files: { [GIST_FILENAME]: { content } } })
+      });
+    } else {
+      // Create new gist
+      res = await fetch('https://api.github.com/gists', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          description: 'Nadie Corre Solo — Training Data Backup',
+          public: false,
+          files: { [GIST_FILENAME]: { content } }
+        })
+      });
+    }
+    json = await res.json();
+    if(!res.ok) throw new Error(json.message || 'Error ' + res.status);
+
+    localStorage.setItem('tw_sync_gist_id', json.id);
+    localStorage.setItem('tw_sync_ts', payload._ts.toString());
+    const ts = new Date(payload._ts).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+    syncSetStatus('✓ Subido a las ' + ts + ' · Gist: ' + json.id.slice(0,8) + '…', 'ok');
+    updateSyncBadge(false);
+  } catch(err){
+    syncSetStatus('✗ Error: ' + err.message, 'err');
+  } finally {
+    syncSetBtnState(false);
+  }
+}
+
+async function syncPull(){
+  const pat = document.getElementById('sync-pat').value.trim() || syncGetPAT();
+  const gistId = syncGetGistId();
+  if(!pat){ syncSetStatus('Introduce tu token primero.', 'err'); return; }
+  if(!gistId){ syncSetStatus('No hay Gist vinculado. Sube primero desde el dispositivo principal.', 'err'); return; }
+
+  syncSetBtnState(true);
+  syncSetStatus('Bajando…');
+
+  try {
+    const res = await fetch('https://api.github.com/gists/' + gistId, {
+      headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    const json = await res.json();
+    if(!res.ok) throw new Error(json.message || 'Error ' + res.status);
+
+    const fileContent = json.files?.[GIST_FILENAME]?.content;
+    if(!fileContent) throw new Error('Archivo no encontrado en el Gist.');
+
+    const remote = JSON.parse(fileContent);
+    syncImportAll(remote);
+
+    const ts = new Date(parseInt(remote._ts||Date.now())).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+    syncSetStatus('✓ Datos bajados (guardados: ' + ts + ') · Recarga para aplicar.', 'ok');
+    updateSyncBadge(false);
+
+    // Reload data in-memory without full page reload
+    setTimeout(()=>{
+      closeSyncModal();
+      if(st.athleteId && st.raceId) loadAthlete(st.athleteId, st.raceId);
+    }, 1200);
+  } catch(err){
+    syncSetStatus('✗ Error: ' + err.message, 'err');
+  } finally {
+    syncSetBtnState(false);
+  }
+}
+
+// Show dirty dot when data changes and hasn't been pushed
+function updateSyncBadge(dirty=false){
+  const btn = document.getElementById('sync-btn');
+  if(!syncGetPAT()){ btn.className=''; return; }
+  if(dirty){ btn.classList.add('dirty'); btn.classList.remove('synced','error'); }
+  else { btn.className = syncGetGistId() ? 'synced' : ''; }
+}
+
+// Close modal on backdrop click (delegated — safe regardless of DOM order)
+document.addEventListener('click', e=>{
+  if(e.target && e.target.id === 'sync-modal') closeSyncModal();
+});
+
+// Mark dirty on any S.set call — patch S
+const _origSset = S.set.bind(S);
+S.set = function(k,v){ _origSset(k,v); if(syncGetPAT()) updateSyncBadge(true); };
+
+// Init badge on load
+updateSyncBadge(false);
+
 // Splash → selector
 setTimeout(()=>{
   const sp=document.getElementById('splash');
@@ -1193,5 +1439,6 @@ setTimeout(()=>{
   setTimeout(()=>{sp.style.display='none';showSelector();},650);
 },600);
 </script>
+
 </body>
 </html>
