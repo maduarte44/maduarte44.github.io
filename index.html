@@ -30,28 +30,23 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 #splash img{width:90%;max-width:460px;object-fit:contain}
 
 /* SELECTOR */
-#selector{position:fixed;inset:0;background:var(--bg);z-index:90;display:none;flex-direction:column;overflow-y:auto;padding-bottom:40px}
-#selector.open{display:flex}
-.sel-hdr{padding:44px 20px 20px;background:linear-gradient(180deg,#0d0d14,transparent)}
-.sel-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--sub);text-transform:uppercase;margin-bottom:6px}
-.sel-h1{font-size:38px;font-weight:900;color:#fff;letter-spacing:1px;line-height:1}
-.sel-sub{font-size:12px;color:var(--sub);font-family:'JetBrains Mono',monospace;margin-top:5px}
-.sel-section{padding:16px 20px 6px;font-size:10px;font-weight:700;letter-spacing:1px;color:var(--sub);text-transform:uppercase}
-.athlete-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 8px}
-.athlete-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px 12px;cursor:pointer;transition:all .15s;text-align:center}
-.athlete-card:active{transform:scale(.95)}
-.athlete-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 8px;background:#12121e}
-.athlete-name{font-size:19px;font-weight:900;color:#fff}
-.athlete-races{font-size:10px;color:var(--sub);font-family:'JetBrains Mono',monospace;margin-top:2px}
-.race-list{display:flex;flex-direction:column;gap:10px;padding:0 16px}
-.race-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:14px}
-.race-card:active{transform:scale(.98)}
-.race-icon{font-size:28px;flex-shrink:0}
-.race-name{font-size:18px;font-weight:900;color:#fff}
-.race-meta{font-size:10px;color:var(--sub);font-family:'JetBrains Mono',monospace;margin-top:3px}
-.race-badge{margin-left:auto;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;flex-shrink:0}
-.sel-back{margin:14px 16px 0;background:none;border:1px solid var(--border);color:var(--sub);padding:10px 16px;border-radius:10px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;width:calc(100% - 32px)}
-.sel-back:active{background:var(--bg3)}
+.settings-panel{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center}.settings-panel.hidden{display:none}
+.settings-overlay{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+.settings-sheet{position:relative;width:100%;max-width:520px;background:var(--bg2);border-radius:20px 20px 0 0;padding:0 0 40px;max-height:80vh;overflow-y:auto;animation:slideUp .2s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.settings-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 12px;border-bottom:1px solid var(--border)}
+.settings-title{font-size:17px;font-weight:700;color:#fff}
+.settings-close{background:none;border:none;color:var(--sub);font-size:18px;cursor:pointer;padding:4px 8px}
+.settings-body{padding:16px 20px}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.settings-row:last-child{border-bottom:none}
+.settings-row-label{font-size:14px;color:#fff;font-weight:600}
+.settings-row-sub{font-size:12px;color:var(--sub);margin-top:2px}
+.settings-row-action{font-size:13px;color:var(--accent);font-weight:600;cursor:pointer;background:none;border:none;padding:8px 12px;border-radius:8px}
+.settings-row-action:active{background:var(--bg3)}
+
+
+
 
 /* HEADER */
 #hdr{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
@@ -344,14 +339,15 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 </div>
 
 <!-- SELECTOR -->
-<div id="selector">
-  <div class="sel-hdr">
-    <div class="sel-eyebrow">Training App</div>
-    <div class="sel-h1" id="sel-h1">Selecciona Atleta</div>
-    <div class="sel-sub" id="sel-sub">Elige tu perfil para continuar</div>
+<div id="settings-panel" class="settings-panel hidden">
+  <div class="settings-overlay" onclick="closeSettings()"></div>
+  <div class="settings-sheet">
+    <div class="settings-header">
+      <span class="settings-title">Ajustes</span>
+      <button class="settings-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="settings-body" id="settings-body"></div>
   </div>
-  <div class="sel-section" id="sel-section-lbl">Atletas</div>
-  <div id="sel-content"></div>
 </div>
 
 <!-- APP -->
@@ -365,7 +361,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 <div class="pace-pill" id="pace-pill" onclick="openPaceModal(true)" title="Tu perfil de ritmos">
         <div class="pace-val"><div id="pp-easy">🟢 –:–</div><div id="pp-fast">🔴 –:–</div></div>
       </div>
-      <button class="hdr-back" id="hdr-athlete" onclick="goSelector()">↩</button>
+      <button class="hdr-back" id="hdr-settings" onclick="openSettings()">⚙️</button>
       <div id="race-countdown"></div>
     </div>
   </div>
@@ -781,52 +777,34 @@ let st={
 // ══════════════════════════════════════════════════
 // SELECTOR
 // ══════════════════════════════════════════════════
-function showSelector(){
-  document.getElementById('app').classList.add('hidden');
-  const sel=document.getElementById('selector');
-  sel.classList.add('open');
-  renderAthletes();
+function openSettings(){
+  const body=document.getElementById('settings-body');
+  const a=ATHLETES[0], r=a?.races.find(x=>x.id===st.raceId)||a?.races[0];
+  const daysLeft=r?Math.ceil((new Date(r.date)-new Date())/86400000):0;
+  body.innerHTML=`
+    <div class="settings-row">
+      <div><div class="settings-row-label">Atleta</div><div class="settings-row-sub">${a?.avatar||'🏃'} ${a?.name||'–'}</div></div>
+    </div>
+    <div class="settings-row">
+      <div><div class="settings-row-label">Carrera activa</div><div class="settings-row-sub">${r?.name||'–'} · ${r?.date||''}</div></div>
+      <div class="settings-row-sub">${daysLeft>0?daysLeft+'d':'🏁'}</div>
+    </div>
+    <div class="settings-row">
+      <div><div class="settings-row-label">Ritmos</div><div class="settings-row-sub">Configurar pace fácil y rápido</div></div>
+      <button class="settings-row-action" onclick="closeSettings();openPaceModal(true)">Editar →</button>
+    </div>
+    <div class="settings-row">
+      <div><div class="settings-row-label">Sincronización</div><div class="settings-row-sub">GitHub Gist</div></div>
+      <button class="settings-row-action" onclick="closeSettings();openSyncModal()">Sync →</button>
+    </div>
+  `;
+  document.getElementById('settings-panel').classList.remove('hidden');
 }
-function goSelector(){showSelector();}
-
-function renderAthletes(){
-  document.getElementById('sel-h1').textContent='Selecciona Atleta';
-  document.getElementById('sel-sub').textContent='Elige tu perfil para continuar';
-  document.getElementById('sel-section-lbl').textContent='Atletas';
-  document.getElementById('sel-content').innerHTML=
-    '<div class="athlete-grid">'+
-    ATHLETES.map(a=>`<div class="athlete-card" onclick="showRaces('${a.id}')">
-      <div class="athlete-avatar">${a.avatar}</div>
-      <div class="athlete-name">${a.name}</div>
-      <div class="athlete-races">${a.races.length} carrera${a.races.length!==1?'s':''}</div>
-    </div>`).join('')+
-    '</div>';
+function closeSettings(){
+  document.getElementById('settings-panel').classList.add('hidden');
 }
-
-function showRaces(aid){
-  const a=ATHLETES.find(x=>x.id===aid);
-  if(!a)return;
-  document.getElementById('sel-h1').textContent=a.name;
-  document.getElementById('sel-sub').textContent='Selecciona una carrera';
-  document.getElementById('sel-section-lbl').textContent='Carreras';
-  document.getElementById('sel-content').innerHTML=
-    '<div class="race-list">'+
-    a.races.map(r=>{
-      const daysLeft=Math.ceil((new Date(r.date)-new Date())/(86400000));
-      const pc=PHASE_C['CARRERA'];
-      const badge=daysLeft>0?`${daysLeft}d`:'🏁';
-      return `<div class="race-card" onclick="launchApp('${aid}','${r.id}')">
-        <div class="race-icon">⛰</div>
-        <div>
-          <div class="race-name">${r.name}</div>
-          <div class="race-meta">${r.date} · ${r.distance}km · ${r.elevation}m D+</div>
-        </div>
-        <div class="race-badge" style="background:${pc}22;color:${pc};border:1px solid ${pc}44">${badge}</div>
-      </div>`;
-    }).join('')+
-    '<button class="sel-back" onclick="renderAthletes()">← Volver a Atletas</button>'+
-    '</div>';
-}
+function showSelector(){ launchApp('mauricio','torrencial44k'); }
+function goSelector(){ launchApp('mauricio','torrencial44k'); }
 
 function launchApp(aid,rid){
   const athlete=ATHLETES.find(a=>a.id===aid);
@@ -835,25 +813,24 @@ function launchApp(aid,rid){
   st.athleteId=aid; st.raceId=rid; st.raceDate=race.date;
   S.set('tw_last_aid',aid); S.set('tw_last_rid',rid);
   st.weeks=JSON.parse(JSON.stringify(race.weeks));
-  const savedW=S.get(`tw_weeks_${aid}_${rid}`);
+  const savedW=S.get(`tw_weeks_${rid}`);
   if(savedW)st.weeks=savedW;
-  st.reactions=S.get(`tw_rxn_${aid}_${rid}`)||{};
-  st.logs=S.get(`tw_logs_${aid}_${rid}`)||{};
-  st.overrides=S.get(`tw_overrides_${aid}_${rid}`)||{};
+  st.reactions=S.get(`tw_rxn_${rid}`)||{};
+  st.logs=S.get(`tw_logs_${rid}`)||{};
+  st.overrides=S.get(`tw_overrides_${rid}`)||{};
   // Load paces
-  const savedPaces=S.get(`tw_paces_${aid}_${rid}`);
+  const savedPaces=S.get(`tw_paces_${rid}`);
   if(savedPaces){st.paces=savedPaces;st.pacesSet=true;}
   else{st.paces={easy:400,fast:300};st.pacesSet=false;}
   // Find current week
   const ti=st.weeks.findIndex(w=>w.days.some(d=>d.date===TODAY));
   st.weekIdx=ti>=0?ti:0;
   // Setup header
-  const savedTitle=S.get(`tw_title_${aid}_${rid}`);
+  const savedTitle=S.get(`tw_title_${rid}`);
   document.getElementById('app-title').textContent=savedTitle||race.defaultTitle||`⛰ ${race.name}`;
   document.getElementById('race-sub').textContent=`${race.distance}km · ${race.elevation}m D+`;
-  document.getElementById('hdr-athlete').textContent='↩';
+  document.getElementById('hdr-settings').textContent='⚙️';
   // Hide selector, show app
-  document.getElementById('selector').classList.remove('open');
   document.getElementById('app').classList.remove('hidden');
   st.tab='cal';
   switchTab('cal');
@@ -963,7 +940,7 @@ function swapCards(a,b,wi){
   ['session','type','km','desc','sets','exercises'].forEach(f=>{const tmp=d[a][f];d[a][f]=d[b][f];d[b][f]=tmp;});
   st.weeks=weeks;
   st.selected=null;
-  S.set(`tw_weeks_${st.athleteId}_${st.raceId}`,weeks);
+  S.set(`tw_weeks_${st.raceId}`,weeks);
   renderCal();
 }
 
@@ -971,7 +948,7 @@ function cardReact(e,dayId,emoji){
   e.stopPropagation();
   const cur=st.reactions[dayId];
   st.reactions={...st.reactions,[dayId]:cur===emoji?null:emoji};
-  S.set(`tw_rxn_${st.athleteId}_${st.raceId}`,st.reactions);
+  S.set(`tw_rxn_${st.raceId}`,st.reactions);
   renderCal();
 }
 
@@ -1035,7 +1012,7 @@ function savePaceSettings(){
   const fast=parsePaceMM(document.getElementById('pm-fast-min').value,document.getElementById('pm-fast-sec').value,300);
   st.paces={easy,fast};
   st.pacesSet=true;
-  S.set(`tw_paces_${st.athleteId}_${st.raceId}`,st.paces);
+  S.set(`tw_paces_${st.raceId}`,st.paces);
   closePaceModal();
   updatePacePill();
   document.getElementById('pace-banner').classList.remove('show');
@@ -1051,7 +1028,7 @@ function updatePacesFromLog(day,totalSec,dist){
   if(actualPace<180||actualPace>900)return;
 
   const key=day.type==='SUAVE'?'easy':'fast';
-  const histKey=`tw_ph_${key}_${st.athleteId}_${st.raceId}`;
+  const histKey=`tw_ph_${key}_${st.raceId}`;
   let hist=S.get(histKey)||[];
   hist.unshift(actualPace);
   hist=hist.slice(0,6); // keep last 6 workouts
@@ -1064,7 +1041,7 @@ function updatePacesFromLog(day,totalSec,dist){
   const newPace=Math.round(sumP/sumW);
 
   st.paces[key]=newPace;
-  S.set(`tw_paces_${st.athleteId}_${st.raceId}`,st.paces);
+  S.set(`tw_paces_${st.raceId}`,st.paces);
   updatePacePill();
 }
 
@@ -1310,8 +1287,8 @@ function saveEdit(){
   if(exercises!==undefined)targetDay.exercises=exercises;
 
   // Persist
-  S.set(`tw_weeks_${st.athleteId}_${st.raceId}`,st.weeks);
-  S.set(`tw_overrides_${st.athleteId}_${st.raceId}`,st.overrides);
+  S.set(`tw_weeks_${st.raceId}`,st.weeks);
+  S.set(`tw_overrides_${st.raceId}`,st.overrides);
 
   // Close and refresh
   st.modalDay=null;
@@ -1339,8 +1316,8 @@ function restoreOriginal(){
   if(!targetDay)return;
   Object.assign(targetDay,orig);
   delete st.overrides[st.modalDay.id];
-  S.set(`tw_weeks_${st.athleteId}_${st.raceId}`,st.weeks);
-  S.set(`tw_overrides_${st.athleteId}_${st.raceId}`,st.overrides);
+  S.set(`tw_weeks_${st.raceId}`,st.weeks);
+  S.set(`tw_overrides_${st.raceId}`,st.overrides);
   st.modalDay=null;
   document.getElementById('modal-overlay').classList.remove('open');
   document.getElementById('modal-overlay').style.display='none';
@@ -1352,7 +1329,7 @@ function reactModal(emoji){
   const cur=st.reactions[st.modalDay.id];
   const next=cur===emoji?null:emoji;
   st.reactions={...st.reactions,[st.modalDay.id]:next};
-  S.set(`tw_rxn_${st.athleteId}_${st.raceId}`,st.reactions);
+  S.set(`tw_rxn_${st.raceId}`,st.reactions);
   document.querySelectorAll('.m-rxn-btn').forEach(b=>{
     b.className='m-rxn-btn'+(next?b.dataset.e===next?' active':' inactive':'');
   });
@@ -1369,7 +1346,7 @@ function saveLog(){
   let pace='';
   if(dist>0&&(th||tm||ts2)){const spk=(th*3600+tm*60+ts2)/dist;pace=`${Math.floor(spk/60)}:${String(Math.round(spk%60)).padStart(2,'0')}/km`;}
   st.logs={...st.logs,[st.modalDay.id]:{th,tm,ts:ts2,distance:dist||null,time:timeStr,pace}};
-  S.set(`tw_logs_${st.athleteId}_${st.raceId}`,st.logs);
+  S.set(`tw_logs_${st.raceId}`,st.logs);
   // Update pace profile from real data
   if(dist>0)updatePacesFromLog(st.modalDay,th*3600+tm*60+ts2,dist);
   renderCal();
@@ -1469,7 +1446,7 @@ function initTitle(){
   const el=document.getElementById('app-title');
   el.addEventListener('blur',()=>{
     const v=el.textContent.trim();
-    if(v&&st.athleteId)S.set(`tw_title_${st.athleteId}_${st.raceId}`,v);
+    if(v&&st.raceId)S.set(`tw_title_${st.raceId}`,v);
   });
   el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();el.blur();}});
 }
@@ -1655,7 +1632,7 @@ async function syncPull(){
     // Reload data in-memory without full page reload
     setTimeout(()=>{
       closeSyncModal();
-      if(st.athleteId && st.raceId) loadAthlete(st.athleteId, st.raceId);
+      if(st.raceId) launchApp(st.athleteId||'mauricio', st.raceId);
     }, 1200);
   } catch(err){
     syncSetStatus('✗ Error: ' + err.message, 'err');
@@ -1684,15 +1661,43 @@ S.set = function(k,v){ _origSset(k,v); if(syncGetPAT()) updateSyncBadge(true); }
 // Init badge on load
 updateSyncBadge(false);
 
+// Auto-migrate old storage schema (tw_*_athleteId_raceId → tw_*_raceId)
+function migrateStorage(){
+  if(S.get('tw_migrated')) return;
+  const oldRid='torrencial44k', oldAid='mauro';
+  const keyMap=['weeks','logs','rxn','overrides','paces','title'];
+  let migrated=false;
+  keyMap.forEach(k=>{
+    const oldKey=`tw_${k}_${oldAid}_${oldRid}`;
+    const newKey=`tw_${k}_${oldRid}`;
+    const val=S.get(oldKey);
+    if(val!==null){
+      // Only set new key if it doesn't already have data
+      if(S.get(newKey)===null) S.set(newKey,val);
+      try{ localStorage.removeItem(oldKey); }catch(e){}
+      migrated=true;
+    }
+  });
+  // Also migrate last_aid/last_rid
+  const lastAid=S.get('tw_last_aid');
+  const lastRid=S.get('tw_last_rid');
+  if(lastAid&&lastRid&&!lastRid.includes('_')===false){
+    // old format was aid_rid stored separately, already good
+  }
+  if(migrated) console.log('[Migration] Storage migrated to new schema');
+  S.set('tw_migrated',true);
+}
+migrateStorage();
+
 // Splash → selector
 setTimeout(()=>{
   const sp=document.getElementById('splash');
   sp.style.opacity='0';
   setTimeout(()=>{
     sp.style.display='none';
-    const lastAid=S.get('tw_last_aid');
+    const lastAid=S.get('tw_last_aid')||'mauricio';
     const lastRid=S.get('tw_last_rid');
-    if(lastAid && lastRid && ATHLETES.find(a=>a.id===lastAid)?.races.find(r=>r.id===lastRid)){
+    if(lastRid){
       launchApp(lastAid, lastRid);
     } else {
       showSelector();
