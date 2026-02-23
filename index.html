@@ -241,7 +241,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .pb-cta{font-size:11px;font-weight:700;color:#7b9cf5;letter-spacing:1px;flex-shrink:0}
 
 /* ── SYNC ── */
-#sync-btn{position:relative}
+#sync-btn{position:relative;background:none;border:none;flex:1.5}
 #sync-btn.synced{color:#52c9a0}
 #sync-btn.syncing{color:#f5b731;animation:spin .8s linear infinite}
 #sync-btn.error{color:#f4634a}
@@ -709,7 +709,7 @@ const TYPE={
   DESCANSO:{bg:'#0e0e12',bd:'#252530',  tx:'#3a3a4a',ch:'#141420'},
 };
 const PHASE_C={'BASE':'#52c9a0','DESARROLLO':'#f5b731','PICO':'#f4634a','PEAK 🔺':'#f4634a','RECUPERACIÓN':'#a98be8','TAPER':'#7b9cf5','TAPER FINAL':'#7b9cf5','CARRERA':'#f5b731'};
-const TODAY=new Date().toISOString().split('T')[0];
+const TODAY=new Date().toLocaleDateString('en-CA',{timeZone:'America/Santiago'});
 
 let st={
   athleteId:null,raceId:null,raceDate:null,weeks:[],
