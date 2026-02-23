@@ -273,13 +273,12 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .pb-cta{font-size:11px;font-weight:700;color:#7b9cf5;letter-spacing:1px;flex-shrink:0}
 
 /* ── SYNC ── */
-#sync-btn{position:relative;background:transparent!important;flex:1 1 0!important;min-width:0;width:0;border:none!important;outline:none!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important}
-#sync-btn.synced{color:#52c9a0}
-#sync-btn.syncing{color:#f5b731;animation:spin .8s linear infinite}
-#sync-btn.error{color:#f4634a}
+#hdr-settings.synced{color:#52c9a0;border-color:#52c9a044}
+#hdr-settings.syncing{animation:spin .8s linear infinite}
+#hdr-settings.error{color:#f4634a;border-color:#f4634a44}
 @keyframes spin{to{transform:rotate(360deg)}}
-#sync-dot{position:absolute;top:0;right:-4px;width:7px;height:7px;border-radius:50%;background:#f5b731;display:none;border:1px solid var(--bg2)}
-#sync-btn.dirty #sync-dot{display:inline-block}
+#sync-dot{position:absolute;top:2px;right:2px;width:7px;height:7px;border-radius:50%;background:#f5b731;display:none;border:1px solid var(--bg2)}
+#hdr-settings.dirty #sync-dot{display:inline-block}
 #sync-modal{display:none;position:fixed;inset:0;z-index:200;background:#000a}
 #sync-modal.show{display:flex;align-items:flex-end}
 #sync-box{background:var(--bg2);border-top:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;animation:slideUp .25s ease;max-height:90dvh;overflow-y:auto}
@@ -299,6 +298,55 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .sync-divider{border:none;border-top:1px solid var(--border);margin:16px 0}
 .sync-help{font-size:11px;color:var(--sub);line-height:1.7}
 .sync-help a{color:#7b9cf5;text-decoration:none}
+/* Settings race rows */
+.settings-section-label{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--sub);text-transform:uppercase;padding:4px 0}
+.settings-race-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.settings-race-row:active{transform:scale(.98)}
+.settings-race-active{border-color:#52c9a044;background:#0a1e14}
+.settings-del-btn{background:none;border:1px solid var(--border);color:var(--sub);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center}
+.settings-new-race-btn{width:100%;padding:14px;background:none;border:1px dashed var(--accent);color:var(--accent);border-radius:12px;font-size:14px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;margin-top:4px;margin-bottom:2px;transition:all .15s}
+.settings-new-race-btn:active{background:rgba(123,156,245,.1)}
+
+/* Nueva carrera wizard */
+.wizard-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+.wizard-overlay.hidden{display:none}
+.wizard-sheet{width:100%;max-width:520px;background:var(--bg2);border-radius:20px 20px 0 0;padding:0 0 44px;max-height:92vh;overflow-y:auto;animation:slideUp .25s ease}
+.wizard-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 10px}
+.wizard-title{font-size:18px;font-weight:800;color:#fff}
+.wizard-close{background:none;border:none;color:var(--sub);font-size:20px;cursor:pointer;padding:4px 8px}
+.wizard-progress{display:flex;gap:4px;padding:0 20px 18px}
+.wizard-step-dot{flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .3s}
+.wizard-step-dot.done{background:var(--accent)}
+.wizard-step-dot.active{background:#fff}
+.wizard-body{padding:0 20px}
+.wizard-step{display:none}
+.wizard-step.active{display:block}
+.wizard-label{font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--sub);text-transform:uppercase;margin-bottom:6px;margin-top:16px}
+.wizard-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:#fff;font-family:'Inter',sans-serif;font-size:15px;box-sizing:border-box;outline:none}
+.wizard-input:focus{border-color:var(--accent)}
+.wizard-row{display:flex;gap:10px}
+.wizard-row .wizard-input{width:50%}
+.wizard-footer{display:flex;gap:10px;padding:20px 20px 0}
+.wizard-btn-back{flex:0;background:none;border:1px solid var(--border);color:var(--sub);padding:14px 18px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.wizard-btn-next{flex:1;background:var(--accent);border:none;color:#0d0d14;padding:14px;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif}
+.wizard-btn-next:disabled{opacity:.4;cursor:default}
+.wizard-generating{text-align:center;padding:30px 0}
+.wizard-gen-icon{font-size:40px;animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:.7}}
+.wizard-gen-label{font-size:15px;color:#fff;font-weight:600;margin-top:12px}
+.wizard-gen-sub{font-size:12px;color:var(--sub);margin-top:6px}
+.wizard-error{background:#1e0a07;border:1px solid #f4634a44;border-radius:10px;padding:14px;color:#f4634a;font-size:13px;margin-top:12px}
+.wz-avatar-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:4px}
+.wz-avatar-btn{background:var(--bg3);border:2px solid transparent;border-radius:12px;font-size:24px;padding:10px 4px;cursor:pointer;text-align:center;transition:all .15s}
+.wz-avatar-btn.selected{border-color:var(--accent);background:#0e1535}
+.wz-avatar-btn:active{transform:scale(.9)}
+
+/* Contextual next-race banner */
+.next-race-banner{background:#0a0f1e;border:1px solid #7b9cf544;border-radius:14px;padding:14px 16px;margin:10px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.next-race-banner:active{transform:scale(.98)}
+.nrb-text{font-size:13px;color:#a0b4f0;font-weight:600}
+.nrb-sub{font-size:11px;color:var(--sub);margin-top:2px}
+.nrb-btn{font-size:12px;font-weight:700;color:var(--accent);background:none;border:1px solid var(--accent);padding:6px 12px;border-radius:8px;cursor:pointer;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -350,6 +398,103 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   </div>
 </div>
 
+<!-- Nueva carrera wizard -->
+<div id="wizard-overlay" class="wizard-overlay hidden">
+  <div class="wizard-sheet">
+    <div class="wizard-hdr">
+      <span class="wizard-title" id="wizard-title">Nueva carrera</span>
+      <button class="wizard-close" id="wizard-close-btn" onclick="closeWizard()">✕</button>
+    </div>
+    <div class="wizard-progress" id="wizard-progress"></div>
+    <div class="wizard-body">
+
+      <!-- Step 0: Profile (first-launch only) -->
+      <div class="wizard-step" id="wz-step-0">
+        <div style="text-align:center;padding:8px 0 20px">
+          <div style="font-size:48px" id="wz-avatar-preview">🏃</div>
+          <div style="font-size:22px;font-weight:900;color:#fff;margin-top:8px">Bienvenido/a</div>
+          <div style="font-size:13px;color:var(--sub);margin-top:4px">Cuéntanos un poco sobre ti</div>
+        </div>
+        <div class="wizard-label">Tu nombre</div>
+        <input class="wizard-input" id="wz-profile-name" placeholder="ej. Mauro" oninput="wizardValidate0()">
+        <div class="wizard-label">Elige un avatar</div>
+        <div class="wz-avatar-grid" id="wz-avatar-grid"></div>
+        <div class="wizard-footer">
+          <button class="wizard-btn-next" id="wz-next-0" onclick="wizardNext(0)" disabled>Siguiente →</button>
+        </div>
+      </div>
+
+      <!-- Step 1: Race details -->
+      <div class="wizard-step active" id="wz-step-1">
+        <div class="wizard-label">Nombre de la carrera</div>
+        <input class="wizard-input" id="wz-name" placeholder="ej. Ultra Trail del Maule" oninput="wizardValidate()">
+        <div class="wizard-row" style="margin-top:0">
+          <div style="flex:1">
+            <div class="wizard-label">Distancia (km)</div>
+            <input class="wizard-input" id="wz-distance" type="number" placeholder="42" oninput="wizardValidate()">
+          </div>
+          <div style="flex:1">
+            <div class="wizard-label">Desnivel D+ (m)</div>
+            <input class="wizard-input" id="wz-elevation" type="number" placeholder="2500" oninput="wizardValidate()">
+          </div>
+        </div>
+        <div class="wizard-label">Fecha de la carrera</div>
+        <input class="wizard-input" id="wz-date" type="date" oninput="wizardValidate()">
+        <div class="wizard-footer" id="wz-footer-1">
+          <button class="wizard-btn-back" id="wz-back-1" onclick="wizardBack(1)" style="display:none">← Volver</button>
+          <button class="wizard-btn-next" id="wz-next-1" onclick="wizardNext(1)" disabled>Siguiente →</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Level / paces -->
+      <div class="wizard-step" id="wz-step-2">
+        <div style="font-size:13px;color:var(--sub);margin-bottom:4px">Usaremos tu nivel actual para generar el plan. Ajusta si ha cambiado.</div>
+        <div class="wizard-row">
+          <div style="flex:1">
+            <div class="wizard-label">Ritmo suave (mm:ss)</div>
+            <input class="wizard-input" id="wz-easy-pace" placeholder="6:40">
+          </div>
+          <div style="flex:1">
+            <div class="wizard-label">Ritmo intenso (mm:ss)</div>
+            <input class="wizard-input" id="wz-fast-pace" placeholder="5:00">
+          </div>
+        </div>
+        <div class="wizard-row">
+          <div style="flex:1">
+            <div class="wizard-label">Distancia cómoda (km)</div>
+            <input class="wizard-input" id="wz-easy-km" type="number" placeholder="10">
+          </div>
+          <div style="flex:1">
+            <div class="wizard-label">Distancia máxima (km)</div>
+            <input class="wizard-input" id="wz-max-km" type="number" placeholder="20">
+          </div>
+        </div>
+        <div class="wizard-label">Fecha de inicio del plan</div>
+        <input class="wizard-input" id="wz-start-date" type="date">
+        <div class="wizard-footer">
+          <button class="wizard-btn-back" onclick="wizardBack(2)">← Volver</button>
+          <button class="wizard-btn-next" onclick="wizardGenerate()">Generar plan →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Generating -->
+      <div class="wizard-step" id="wz-step-gen">
+        <div class="wizard-generating">
+          <div class="wizard-gen-icon">🤖</div>
+          <div class="wizard-gen-label" id="wz-gen-label">Diseñando tu plan...</div>
+          <div class="wizard-gen-sub" id="wz-gen-sub">Esto toma unos segundos</div>
+        </div>
+        <div id="wz-error" class="wizard-error hidden"></div>
+        <div class="wizard-footer" id="wz-error-footer" style="display:none">
+          <button class="wizard-btn-back" onclick="wizardBack(3)">← Volver</button>
+          <button class="wizard-btn-next" onclick="wizardGenerate()">Reintentar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <!-- APP -->
 <div id="app" class="hidden">
   <div id="hdr">
@@ -361,7 +506,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 <div class="pace-pill" id="pace-pill" onclick="openPaceModal(true)" title="Tu perfil de ritmos">
         <div class="pace-val"><div id="pp-easy">🟢 –:–</div><div id="pp-fast">🔴 –:–</div></div>
       </div>
-      <button class="hdr-back" id="hdr-settings" onclick="openSettings()">⚙️</button>
+      <button class="hdr-back" id="hdr-settings" onclick="openSettings()" style="position:relative">⚙️<span id="sync-dot"></span></button>
       <div id="race-countdown"></div>
     </div>
   </div>
@@ -408,7 +553,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   <div id="tabbar">
     <button class="tab-btn active" id="tbtn-cal" onclick="switchTab('cal')"><span class="tab-icon">📅</span>CALENDARIO</button>
     <button class="tab-btn" id="tbtn-stats" onclick="switchTab('stats')"><span class="tab-icon">📊</span>ANALÍTICAS</button>
-    <button class="tab-btn" id="sync-btn" onclick="openSyncModal()" title="Sincronizar con GitHub Gist"><span class="tab-icon">☁️<span id="sync-dot"></span></span>NUBE</button>
   </div>
 </div>
 
@@ -517,6 +661,25 @@ const ATHLETES=[{
     weeks: buildWeeks()
   }]
 }];
+
+// ── Multi-race helpers ──────────────────────────────────────
+function getAllRaces(){
+  // Merge hardcoded races + user-added races from localStorage
+  const base=ATHLETES[0].races;
+  const custom=S.get('tw_races')||[];
+  return [...base,...custom];
+}
+function getActiveRaceId(){
+  const saved=S.get('tw_last_rid');
+  if(saved) return saved;
+  const today=new Date();
+  const all=getAllRaces();
+  const upcoming=all.filter(r=>new Date(r.date)>=today);
+  return upcoming.length?upcoming[0].id:all[all.length-1]?.id;
+}
+function getRaceById(rid){
+  return getAllRaces().find(r=>r.id===rid);
+}
 
 function W(id,date,label,session,type,km,desc,opts={}){
   return {id,date,label,session,type,km,desc,...opts};
@@ -779,20 +942,34 @@ let st={
 // ══════════════════════════════════════════════════
 function openSettings(){
   const body=document.getElementById('settings-body');
-  const a=ATHLETES[0], r=a?.races.find(x=>x.id===st.raceId)||a?.races[0];
-  const daysLeft=r?Math.ceil((new Date(r.date)-new Date())/86400000):0;
+  const all=getAllRaces();
+  const profile=S.get('tw_profile')||{name:'Mauricio',avatar:'🏔'};
+  const raceRows=all.map(r=>{
+    const daysLeft=Math.ceil((new Date(r.date)-new Date())/86400000);
+    const isActive=r.id===st.raceId;
+    const badge=daysLeft>0?`${daysLeft}d`:'🏁';
+    const isCustom=!ATHLETES[0].races.find(x=>x.id===r.id);
+    return `<div class="settings-race-row${isActive?' settings-race-active':''}" onclick="closeSettings();launchApp('mauricio','${r.id}')">
+      <div>
+        <div class="settings-row-label">${r.name}${isActive?'<span style="color:#52c9a0;font-size:10px;font-weight:600;margin-left:6px">● ACTIVA</span>':''}</div>
+        <div class="settings-row-sub">${r.date} · ${r.distance}km · ${r.elevation}m D+</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:12px;font-weight:700;color:#f5b731">${badge}</span>
+        ${isCustom?`<button class="settings-del-btn" onclick="event.stopPropagation();deleteRace('${r.id}')">✕</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
   body.innerHTML=`
+    <div class="settings-section-label">ATLETA</div>
     <div class="settings-row">
-      <div><div class="settings-row-label">Atleta</div><div class="settings-row-sub">${a?.avatar||'🏃'} ${a?.name||'–'}</div></div>
+      <div><div class="settings-row-label">${profile.avatar} ${profile.name}</div></div>
+      <button class="settings-row-action" onclick="closeSettings();openPaceModal(true)">Ritmos →</button>
     </div>
-    <div class="settings-row">
-      <div><div class="settings-row-label">Carrera activa</div><div class="settings-row-sub">${r?.name||'–'} · ${r?.date||''}</div></div>
-      <div class="settings-row-sub">${daysLeft>0?daysLeft+'d':'🏁'}</div>
-    </div>
-    <div class="settings-row">
-      <div><div class="settings-row-label">Ritmos</div><div class="settings-row-sub">Configurar pace fácil y rápido</div></div>
-      <button class="settings-row-action" onclick="closeSettings();openPaceModal(true)">Editar →</button>
-    </div>
+    <div class="settings-section-label" style="margin-top:16px">CARRERAS</div>
+    ${raceRows}
+    <button class="settings-new-race-btn" onclick="closeSettings();openNewRaceWizard()">+ Nueva carrera</button>
+    <div class="settings-section-label" style="margin-top:16px">DATOS</div>
     <div class="settings-row">
       <div><div class="settings-row-label">Sincronización</div><div class="settings-row-sub">GitHub Gist</div></div>
       <button class="settings-row-action" onclick="closeSettings();openSyncModal()">Sync →</button>
@@ -800,15 +977,23 @@ function openSettings(){
   `;
   document.getElementById('settings-panel').classList.remove('hidden');
 }
+function deleteRace(rid){
+  if(!confirm('¿Eliminar esta carrera y todos sus datos?'))return;
+  const custom=(S.get('tw_races')||[]).filter(r=>r.id!==rid);
+  S.set('tw_races',custom);
+  ['weeks','logs','rxn','overrides','paces','title'].forEach(k=>{
+    try{localStorage.removeItem(`tw_${k}_${rid}`);}catch(e){}
+  });
+  openSettings();
+}
 function closeSettings(){
   document.getElementById('settings-panel').classList.add('hidden');
 }
-function showSelector(){ launchApp('mauricio','torrencial44k'); }
-function goSelector(){ launchApp('mauricio','torrencial44k'); }
+function showSelector(){ launchApp('mauricio', getActiveRaceId()||'torrencial44k'); }
+function goSelector(){ showSelector(); }
 
 function launchApp(aid,rid){
-  const athlete=ATHLETES.find(a=>a.id===aid);
-  const race=athlete?.races.find(r=>r.id===rid);
+  const race=getRaceById(rid);
   if(!race)return;
   st.athleteId=aid; st.raceId=rid; st.raceDate=race.date;
   S.set('tw_last_aid',aid); S.set('tw_last_rid',rid);
@@ -829,7 +1014,6 @@ function launchApp(aid,rid){
   const savedTitle=S.get(`tw_title_${rid}`);
   document.getElementById('app-title').textContent=savedTitle||race.defaultTitle||`⛰ ${race.name}`;
   document.getElementById('race-sub').textContent=`${race.distance}km · ${race.elevation}m D+`;
-  document.getElementById('hdr-settings').textContent='⚙️';
   // Hide selector, show app
   document.getElementById('app').classList.remove('hidden');
   st.tab='cal';
@@ -932,6 +1116,24 @@ function renderCal(){
   });
   const ti=w.days.findIndex(d=>d.date===TODAY);
   if(ti>=0)setTimeout(()=>{const c=grid.querySelectorAll('.day-card')[ti];c&&c.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});},120);
+  // Show "add next race" banner in CARRERA or RECUPERACIÓN weeks
+  const showBanner=(w.phase==='CARRERA'||w.phase?.startsWith('RECUPERACIÓN'));
+  let bannerEl=document.getElementById('next-race-banner-cal');
+  if(!bannerEl){
+    bannerEl=document.createElement('div');
+    bannerEl.id='next-race-banner-cal';
+    const calSection=document.getElementById('cal-section')||document.getElementById('cards-grid')?.parentElement?.parentElement;
+    if(calSection) calSection.appendChild(bannerEl);
+  }
+  if(showBanner){
+    bannerEl.innerHTML=`<div class="next-race-banner" onclick="openNewRaceWizard()">
+      <div><div class="nrb-text">¿Ya tienes tu próxima carrera?</div><div class="nrb-sub">Regístrala para continuar el timeline</div></div>
+      <button class="nrb-btn">+ Agregar →</button>
+    </div>`;
+    bannerEl.style.display='block';
+  } else {
+    bannerEl.style.display='none';
+  }
 }
 
 function swapCards(a,b,wi){
@@ -1489,8 +1691,8 @@ function syncSetStatus(msg, cls=''){
 }
 
 function syncSetBtnState(state){
-  const btn = document.getElementById('sync-btn');
-  btn.className = state ? 'syncing' : '';
+  const btn = document.getElementById('hdr-settings');
+  btn.classList.toggle('syncing', !!state);
 }
 
 function openSyncModal(){
@@ -1643,10 +1845,11 @@ async function syncPull(){
 
 // Show dirty dot when data changes and hasn't been pushed
 function updateSyncBadge(dirty=false){
-  const btn = document.getElementById('sync-btn');
-  if(!syncGetPAT()){ btn.className=''; return; }
+  const btn = document.getElementById('hdr-settings');
+  if(!btn) return;
+  if(!syncGetPAT()){ btn.classList.remove('dirty','synced','error','syncing'); return; }
   if(dirty){ btn.classList.add('dirty'); btn.classList.remove('synced','error'); }
-  else { btn.className = syncGetGistId() ? 'synced' : ''; }
+  else { btn.classList.remove('dirty'); btn.classList.toggle('synced', !!syncGetGistId()); }
 }
 
 // Close modal on backdrop click (delegated — safe regardless of DOM order)
@@ -1661,7 +1864,217 @@ S.set = function(k,v){ _origSset(k,v); if(syncGetPAT()) updateSyncBadge(true); }
 // Init badge on load
 updateSyncBadge(false);
 
-// Auto-migrate old storage schema (tw_*_athleteId_raceId → tw_*_raceId)
+// ══════════════════════════════════════════════════════════
+// WIZARD (nueva carrera + onboarding first-launch)
+// ══════════════════════════════════════════════════════════
+const AVATARS=['🏔','🐺','🦅','⚡','🌊','🔥','🐻','🦁','🌿','🏹','🌑','⛰'];
+const WZ={step:1, isOnboarding:false, selectedAvatar:'🏃'};
+
+function openOnboardingWizard(){
+  WZ.isOnboarding=true;
+  WZ.selectedAvatar='🏃';
+  // Render avatar grid
+  const grid=document.getElementById('wz-avatar-grid');
+  grid.innerHTML=AVATARS.map(a=>`<button class="wz-avatar-btn${a===WZ.selectedAvatar?' selected':''}" onclick="wzSelectAvatar('${a}')">${a}</button>`).join('');
+  document.getElementById('wz-profile-name').value='';
+  document.getElementById('wz-avatar-preview').textContent='🏃';
+  // Clear race fields
+  _wizardClearRaceFields();
+  // Hide close button, show skip
+  document.getElementById('wizard-close-btn').style.display='none';
+  // Show overlay (no backdrop close)
+  const ov=document.getElementById('wizard-overlay');
+  ov.onclick=null;
+  ov.classList.remove('hidden');
+  wizardShowStep(0);
+  wizardValidate0();
+}
+
+function openNewRaceWizard(){
+  WZ.isOnboarding=false;
+  _wizardClearRaceFields();
+  // Pre-fill paces from current profile
+  const profile=S.get('tw_profile');
+  if(profile?.easy_pace){ const e=profile.easy_pace; document.getElementById('wz-easy-pace').value=`${Math.floor(e/60)}:${String(e%60).padStart(2,'0')}`; }
+  else if(st.paces?.easy){ const e=st.paces.easy; document.getElementById('wz-easy-pace').value=`${Math.floor(e/60)}:${String(e%60).padStart(2,'0')}`; }
+  if(profile?.fast_pace){ const f=profile.fast_pace; document.getElementById('wz-fast-pace').value=`${Math.floor(f/60)}:${String(f%60).padStart(2,'0')}`; }
+  else if(st.paces?.fast){ const f=st.paces.fast; document.getElementById('wz-fast-pace').value=`${Math.floor(f/60)}:${String(f%60).padStart(2,'0')}`; }
+  // Show close button
+  document.getElementById('wizard-close-btn').style.display='';
+  const ov=document.getElementById('wizard-overlay');
+  ov.onclick=(e)=>{if(e.target===ov)closeWizard();};
+  ov.classList.remove('hidden');
+  wizardShowStep(1);
+  wizardValidate();
+}
+
+function _wizardClearRaceFields(){
+  const next=new Date(); next.setDate(next.getDate()+7);
+  document.getElementById('wz-start-date').value=next.toISOString().split('T')[0];
+  ['wz-name','wz-distance','wz-elevation','wz-date','wz-easy-km','wz-max-km'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  ['wz-easy-pace','wz-fast-pace'].forEach(id=>{
+    const el=document.getElementById(id); if(el&&!el.value) el.value='';
+  });
+}
+
+function closeWizard(){
+  document.getElementById('wizard-overlay').classList.add('hidden');
+}
+
+function wzSelectAvatar(a){
+  WZ.selectedAvatar=a;
+  document.getElementById('wz-avatar-preview').textContent=a;
+  document.querySelectorAll('.wz-avatar-btn').forEach(b=>b.classList.toggle('selected',b.textContent===a));
+  wizardValidate0();
+}
+
+function wizardShowStep(n){
+  WZ.step=n;
+  document.querySelectorAll('.wizard-step').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(`wz-step-${n}`)||document.getElementById('wz-step-gen');
+  if(el) el.classList.add('active');
+  // Progress: steps are 0,1,2 (or 1,2 for add-race)
+  const prog=document.getElementById('wizard-progress');
+  const steps=WZ.isOnboarding?[0,1,2]:[1,2];
+  prog.innerHTML=steps.map(i=>`<div class="wizard-step-dot${i<n?' done':i===n?' active':''}"></div>`).join('');
+  const titles={0:'Tu perfil', 1:'La carrera', 2:'Tu nivel', gen:'Generando plan...'};
+  document.getElementById('wizard-title').textContent=titles[n]||titles.gen;
+  // Show back button on step 1 only in onboarding mode
+  const backBtn=document.getElementById('wz-back-1');
+  if(backBtn) backBtn.style.display=(n===1&&WZ.isOnboarding)?'':'none';
+}
+
+function wizardNext(step){
+  if(step===0) wizardShowStep(1);
+  else if(step===1) wizardShowStep(2);
+}
+function wizardBack(step){
+  if(step===2) wizardShowStep(1);
+  else if(step===1 && WZ.isOnboarding) wizardShowStep(0);
+  else if(step===3) wizardShowStep(2);
+}
+
+function wizardValidate0(){
+  const name=document.getElementById('wz-profile-name')?.value?.trim();
+  const btn=document.getElementById('wz-next-0');
+  if(btn) btn.disabled=!name;
+}
+function wizardValidate(){
+  const name=document.getElementById('wz-name')?.value?.trim();
+  const dist=document.getElementById('wz-distance')?.value;
+  const date=document.getElementById('wz-date')?.value;
+  const btn=document.getElementById('wz-next-1');
+  if(btn) btn.disabled=!(name&&dist&&date);
+}
+
+function parsePace(str){
+  if(!str)return null;
+  const parts=str.split(':');
+  if(parts.length!==2)return null;
+  const mins=parseInt(parts[0]), secs=parseInt(parts[1]);
+  if(isNaN(mins)||isNaN(secs))return null;
+  return mins*60+secs;
+}
+
+async function wizardGenerate(){
+  wizardShowStep('gen');
+  document.getElementById('wz-error').classList.add('hidden');
+  document.getElementById('wz-error-footer').style.display='none';
+
+  const raceName=document.getElementById('wz-name').value.trim();
+  const distance=parseFloat(document.getElementById('wz-distance').value);
+  const elevation=parseInt(document.getElementById('wz-elevation').value)||0;
+  const raceDate=document.getElementById('wz-date').value;
+  const startDate=document.getElementById('wz-start-date').value;
+  const easyPaceSec=parsePace(document.getElementById('wz-easy-pace').value)||400;
+  const fastPaceSec=parsePace(document.getElementById('wz-fast-pace').value)||300;
+  const easyKm=parseFloat(document.getElementById('wz-easy-km').value)||10;
+  const maxKm=parseFloat(document.getElementById('wz-max-km').value)||20;
+  const weeksUntilRace=Math.max(4,Math.round((new Date(raceDate)-new Date(startDate))/(7*86400000)));
+
+  document.getElementById('wz-gen-label').textContent='Diseñando tu plan de semanas...';
+  document.getElementById('wz-gen-sub').textContent=`${weeksUntilRace} semanas · ${distance}km`;
+
+  const prompt=`Genera un plan de entrenamiento de trail running para esta carrera:
+- Nombre: ${raceName}
+- Distancia: ${distance}km, Desnivel: ${elevation}m D+
+- Fecha carrera: ${raceDate}
+- Inicio plan: ${startDate} (${weeksUntilRace} semanas)
+- Nivel actual: cómodo a ${easyKm}km, máximo ${maxKm}km
+- Ritmo suave: ${Math.floor(easyPaceSec/60)}:${String(easyPaceSec%60).padStart(2,'0')}/km
+- Ritmo intenso: ${Math.floor(fastPaceSec/60)}:${String(fastPaceSec%60).padStart(2,'0')}/km
+
+IMPORTANTE: Responde SOLO con JSON válido, sin markdown, sin texto adicional. Usa este schema exacto:
+[
+  {
+    "num": 1,
+    "dates": "1–7 Mar",
+    "phase": "BASE",
+    "totalKm": 25,
+    "days": [
+      {"id":"w1d0","date":"2026-03-02","label":"Lun 2 Mar","session":"Rodaje suave","type":"SUAVE","km":8,"desc":"Descripción."},
+      {"id":"w1d1","date":"2026-03-03","label":"Mar 3 Mar","session":"Fuerza – Tren inferior","type":"FUERZA","km":0,"sets":3,"desc":"Descripción.","exercises":[{"name":"Sentadilla","reps":"12"},{"name":"Plancha","reps":"30 seg"}]},
+      {"id":"w1d2","date":"2026-03-04","label":"Mié 4 Mar","session":"Descanso","type":"DESCANSO","km":0,"desc":"Descanso activo."}
+    ]
+  }
+]
+
+Fases: BASE (25%), DESARROLLO (30%), PICO (25%), TAPER (2 semanas), CARRERA (1 semana), RECUPERACIÓN (2 semanas).
+3-4 sesiones por semana (1-2 FUERZA, resto SUAVE/MEDIO/INTENSO/DESCANSO).
+Fase CARRERA: el día de la carrera tiene type INTENSO, km=${distance}.
+IDs de días: patrón wNdM (N=semana, M=índice). Fechas en YYYY-MM-DD.`;
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8000,messages:[{role:'user',content:prompt}]})
+    });
+    if(!resp.ok) throw new Error(`API error ${resp.status}`);
+    const data=await resp.json();
+    const text=data.content?.map(c=>c.text||'').join('').trim();
+    let weeks;
+    try{
+      const clean=text.replace(/^```json\s*/,'').replace(/```\s*$/,'').trim();
+      weeks=JSON.parse(clean);
+    }catch(e){ throw new Error('No se pudo parsear el plan. Intenta de nuevo.'); }
+    if(!Array.isArray(weeks)||!weeks.length) throw new Error('El plan generado está vacío.');
+
+    const raceId='race_'+Date.now();
+    const newRace={id:raceId,name:raceName,date:raceDate,distance,elevation,defaultTitle:`⛰ ${raceName}`,weeks,status:'upcoming'};
+
+    if(WZ.isOnboarding){
+      // Save profile
+      const profileName=document.getElementById('wz-profile-name').value.trim();
+      S.set('tw_profile',{name:profileName,avatar:WZ.selectedAvatar,easy_pace:easyPaceSec,fast_pace:fastPaceSec});
+      // Save as first custom race (overrides hardcoded Torrencial on auto-launch)
+      const custom=S.get('tw_races')||[];
+      custom.unshift(newRace);
+      S.set('tw_races',custom);
+    } else {
+      const custom=S.get('tw_races')||[];
+      custom.push(newRace);
+      S.set('tw_races',custom);
+    }
+
+    document.getElementById('wz-gen-label').textContent='¡Plan listo! 🎉';
+    document.getElementById('wz-gen-sub').textContent=`${weeks.length} semanas generadas`;
+    setTimeout(()=>{
+      closeWizard();
+      launchApp('mauricio',raceId);
+    },1200);
+  }catch(err){
+    const errEl=document.getElementById('wz-error');
+    errEl.textContent='✗ '+err.message;
+    errEl.classList.remove('hidden');
+    document.getElementById('wz-error-footer').style.display='flex';
+    document.getElementById('wz-gen-label').textContent='Error al generar el plan';
+    document.getElementById('wz-gen-sub').textContent='';
+  }
+}
+
 function migrateStorage(){
   if(S.get('tw_migrated')) return;
   const oldRid='torrencial44k', oldAid='mauro';
@@ -1678,18 +2091,17 @@ function migrateStorage(){
       migrated=true;
     }
   });
-  // Also migrate last_aid/last_rid
-  const lastAid=S.get('tw_last_aid');
-  const lastRid=S.get('tw_last_rid');
-  if(lastAid&&lastRid&&!lastRid.includes('_')===false){
-    // old format was aid_rid stored separately, already good
+  // Also ensure tw_last_rid is set for the base race if nothing is saved
+  if(!S.get('tw_last_rid') && migrated){
+    S.set('tw_last_rid', 'torrencial44k');
+    S.set('tw_last_aid', 'mauricio');
   }
   if(migrated) console.log('[Migration] Storage migrated to new schema');
   S.set('tw_migrated',true);
 }
 migrateStorage();
 
-// Splash → selector
+// Splash → app or onboarding
 setTimeout(()=>{
   const sp=document.getElementById('splash');
   sp.style.opacity='0';
@@ -1699,8 +2111,12 @@ setTimeout(()=>{
     const lastRid=S.get('tw_last_rid');
     if(lastRid){
       launchApp(lastAid, lastRid);
+    } else if(S.get('tw_migrated')){
+      // Migrated user but somehow no lastRid — load default
+      launchApp('mauricio','torrencial44k');
     } else {
-      showSelector();
+      // Brand new user — onboarding
+      openOnboardingWizard();
     }
   },650);
 },600);
