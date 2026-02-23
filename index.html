@@ -60,7 +60,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .logo:hover:not(:focus){border-bottom-color:#2a2a35}
 .logo-sub{font-size:9px;color:var(--sub);font-family:'JetBrains Mono',monospace;letter-spacing:.5px}
 .hdr-right{display:flex;align-items:center;gap:10px}
-.hdr-back{background:none;border:1px solid var(--border);color:var(--sub);padding:5px 10px;border-radius:8px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer}
+.hdr-back{background:none;border:1px solid var(--border);color:var(--sub);padding:0;border-radius:8px;cursor:pointer;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 #race-countdown{font-family:'JetBrains Mono',monospace;font-size:11px;text-align:right}
 .cd-num{font-size:20px;font-weight:700;line-height:1}
 
@@ -224,9 +224,9 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .pm-note{font-size:10px;color:#2a2a3e;font-family:'JetBrains Mono',monospace;text-align:center;margin-top:10px;line-height:1.5}
 
 /* Pace indicator in header */
-.pace-pill{display:flex;align-items:center;gap:5px;background:#0e0e18;border:1px solid #1e1e2e;border-radius:20px;padding:4px 10px;cursor:pointer;transition:border-color .15s}
+.pace-pill{display:flex;align-items:center;gap:5px;background:#0e0e18;border:1px solid #1e1e2e;border-radius:20px;padding:4px 12px;cursor:pointer;transition:border-color .15s;min-width:90px}
 .pace-pill:active{border-color:#3a3a60}
-.pace-val{font-family:'JetBrains Mono',monospace;font-size:10px;color:#aaa;line-height:1.3}
+.pace-val{font-family:'JetBrains Mono',monospace;font-size:10px;color:#aaa;line-height:1.4;white-space:nowrap}
 .pace-val strong{color:#7b9cf5;font-size:11px}
 .pace-icon{font-size:13px;opacity:.5}
 
@@ -241,13 +241,13 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .pb-cta{font-size:11px;font-weight:700;color:#7b9cf5;letter-spacing:1px;flex-shrink:0}
 
 /* ── SYNC ── */
-#sync-btn{background:none;border:1px solid var(--border);color:var(--sub);width:32px;height:32px;border-radius:8px;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;position:relative}
-#sync-btn.synced{color:#52c9a0;border-color:#52c9a044}
-#sync-btn.syncing{color:#f5b731;border-color:#f5b73144;animation:spin .8s linear infinite}
-#sync-btn.error{color:#f4634a;border-color:#f4634a44}
+#sync-btn{position:relative;background:none;border:none}
+#sync-btn.synced{color:#52c9a0}
+#sync-btn.syncing{color:#f5b731;animation:spin .8s linear infinite}
+#sync-btn.error{color:#f4634a}
 @keyframes spin{to{transform:rotate(360deg)}}
-#sync-dot{position:absolute;top:-3px;right:-3px;width:7px;height:7px;border-radius:50%;background:#f5b731;display:none;border:1px solid var(--bg2)}
-#sync-btn.dirty #sync-dot{display:block}
+#sync-dot{position:absolute;top:0;right:-4px;width:7px;height:7px;border-radius:50%;background:#f5b731;display:none;border:1px solid var(--bg2)}
+#sync-btn.dirty #sync-dot{display:inline-block}
 #sync-modal{display:none;position:fixed;inset:0;z-index:200;background:#000a}
 #sync-modal.show{display:flex;align-items:flex-end}
 #sync-box{background:var(--bg2);border-top:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;animation:slideUp .25s ease;max-height:90dvh;overflow-y:auto}
@@ -325,11 +325,10 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
       <div class="logo-sub" id="race-sub"></div>
     </div>
     <div class="hdr-right">
-      <button id="sync-btn" onclick="openSyncModal()" title="Sincronizar con GitHub Gist">☁️<div id="sync-dot"></div></button>
-      <div class="pace-pill" id="pace-pill" onclick="openPaceModal(true)" title="Tu perfil de ritmos">
+<div class="pace-pill" id="pace-pill" onclick="openPaceModal(true)" title="Tu perfil de ritmos">
         <div class="pace-val"><div id="pp-easy">🟢 –:–</div><div id="pp-fast">🔴 –:–</div></div>
       </div>
-      <button class="hdr-back" id="hdr-athlete" onclick="goSelector()">↩ Cambiar</button>
+      <button class="hdr-back" id="hdr-athlete" onclick="goSelector()">↩</button>
       <div id="race-countdown"></div>
     </div>
   </div>
@@ -376,6 +375,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   <div id="tabbar">
     <button class="tab-btn active" id="tbtn-cal" onclick="switchTab('cal')"><span class="tab-icon">📅</span>CALENDARIO</button>
     <button class="tab-btn" id="tbtn-stats" onclick="switchTab('stats')"><span class="tab-icon">📊</span>ANALÍTICAS</button>
+    <button class="tab-btn" id="sync-btn" onclick="openSyncModal()" title="Sincronizar con GitHub Gist"><span class="tab-icon">☁️<span id="sync-dot"></span></span></button>
   </div>
 </div>
 
@@ -693,6 +693,24 @@ function buildWeeks(){return [
     W("wRd4","2026-06-26","Vie 26 Jun","Descanso pre-carrera","DESCANSO",0,"Descanso completo. Cena con carbos."),
     W("wRd5","2026-06-27","Sáb 27 Jun 🏁","CARRERA 44km","INTENSO",44,"1500m D+. ¡A correr! Sale al 70% los primeros 10km."),
   ]},
+  {num:19,dates:"28 Jun – 4 Jul",phase:"RECUPERACIÓN POST",totalKm:11,days:[
+    W("w19d0","2026-06-28","Dom 28 Jun","Descanso post-carrera","DESCANSO",0,"El cuerpo lo hizo. Descansa. Hielo en piernas si hay inflamación."),
+    W("w19d1","2026-06-29","Lun 29 Jun","Descanso activo","DESCANSO",0,"Caminata suave 20–30min. Sin correr. Estira con calma."),
+    W("w19d2","2026-06-30","Mar 30 Jun","Descanso","DESCANSO",0,"Descanso completo o movilidad articular 15min."),
+    W("w19d3","2026-07-01","Mié 1 Jul","Trote suave opcional","SUAVE",3,"Solo si las piernas invitan. 20–25min muy suave, plano. Sin presión."),
+    W("w19d4","2026-07-02","Jue 2 Jul","Descanso","DESCANSO",0,"Descanso. Foam roller y estiramientos."),
+    W("w19d5","2026-07-03","Vie 3 Jul","Descanso","DESCANSO",0,"Descanso activo. Prioriza el sueño."),
+    W("w19d6","2026-07-04","Sáb 4 Jul","Rodaje suave","SUAVE",8,"7:00/km o más lento. Terreno plano. La primera sensación real post-carrera."),
+  ]},
+  {num:20,dates:"5–11 Jul",phase:"RECUPERACIÓN POST",totalKm:22,days:[
+    W("w20d0","2026-07-05","Dom 5 Jul","Descanso","DESCANSO",0,"Descanso completo tras el largo del sábado."),
+    W("w20d1","2026-07-06","Lun 6 Jul","Rodaje suave","SUAVE",6,"6:50/km. Piernas sueltas. Evalúa cómo responde el cuerpo."),
+    W("w20d2","2026-07-07","Mar 7 Jul","Descanso","DESCANSO",0,"Descanso activo. Movilidad 20min."),
+    W("w20d3","2026-07-08","Mié 8 Jul","Rodaje suave","SUAVE",8,"6:45/km. Terreno variado. Sin forzar ritmo."),
+    W("w20d4","2026-07-09","Jue 9 Jul","Descanso","DESCANSO",0,"Descanso. Escucha el cuerpo."),
+    W("w20d5","2026-07-10","Vie 10 Jul","Descanso","DESCANSO",0,"Descanso activo. Prepara el largo del sábado."),
+    W("w20d6","2026-07-11","Sáb 11 Jul","Largo suave","SUAVE",8,"7:00/km. Trail suave. Disfruta. Sin objetivos de ritmo."),
+  ]},
 ];}
 // ══════════════════════════════════════════════════
 // STATE
@@ -708,8 +726,8 @@ const TYPE={
   FUERZA:  {bg:'#080e22',bd:'#7b9cf588',tx:'#7b9cf5',ch:'#0e1535'},
   DESCANSO:{bg:'#0e0e12',bd:'#252530',  tx:'#3a3a4a',ch:'#141420'},
 };
-const PHASE_C={'BASE':'#52c9a0','DESARROLLO':'#f5b731','PICO':'#f4634a','PEAK 🔺':'#f4634a','RECUPERACIÓN':'#a98be8','TAPER':'#7b9cf5','TAPER FINAL':'#7b9cf5','CARRERA':'#f5b731'};
-const TODAY=new Date().toISOString().split('T')[0];
+const PHASE_C={'BASE':'#52c9a0','DESARROLLO':'#f5b731','PICO':'#f4634a','PEAK 🔺':'#f4634a','RECUPERACIÓN':'#a98be8','RECUPERACIÓN POST':'#a98be8','TAPER':'#7b9cf5','TAPER FINAL':'#7b9cf5','CARRERA':'#f5b731'};
+const TODAY=new Date().toLocaleDateString('en-CA',{timeZone:'America/Santiago'});
 
 let st={
   athleteId:null,raceId:null,raceDate:null,weeks:[],
@@ -774,6 +792,7 @@ function launchApp(aid,rid){
   const race=athlete?.races.find(r=>r.id===rid);
   if(!race)return;
   st.athleteId=aid; st.raceId=rid; st.raceDate=race.date;
+  S.set('tw_last_aid',aid); S.set('tw_last_rid',rid);
   st.weeks=JSON.parse(JSON.stringify(race.weeks));
   const savedW=S.get(`tw_weeks_${aid}_${rid}`);
   if(savedW)st.weeks=savedW;
@@ -789,8 +808,8 @@ function launchApp(aid,rid){
   // Setup header
   const savedTitle=S.get(`tw_title_${aid}_${rid}`);
   document.getElementById('app-title').textContent=savedTitle||race.defaultTitle||`⛰ ${race.name}`;
-  document.getElementById('race-sub').textContent=`${race.date} · ${race.distance}km · ${race.elevation}m D+`;
-  document.getElementById('hdr-athlete').textContent=`↩ ${athlete.name}`;
+  document.getElementById('race-sub').textContent=`${race.distance}km · ${race.elevation}m D+`;
+  document.getElementById('hdr-athlete').textContent='↩';
   // Hide selector, show app
   document.getElementById('selector').classList.remove('open');
   document.getElementById('app').classList.remove('hidden');
@@ -822,7 +841,7 @@ function updateCountdown(){
 // ══════════════════════════════════════════════════
 function renderCal(){
   const w=st.weeks[st.weekIdx];
-  document.getElementById('week-num').textContent=typeof w.num==='number'?`SEM. ${String(w.num).padStart(2,'0')}`:'CARRERA 🏁';
+  document.getElementById('week-num').textContent=typeof w.num==='number'?`Semana ${String(w.num).padStart(2,'0')}`:'Carrera 🏁';
   document.getElementById('week-dates').textContent=w.dates;
   const pc=PHASE_C[w.phase]||'#888';
   const pb=document.getElementById('phase-badge');
@@ -1436,7 +1455,16 @@ updateSyncBadge(false);
 setTimeout(()=>{
   const sp=document.getElementById('splash');
   sp.style.opacity='0';
-  setTimeout(()=>{sp.style.display='none';showSelector();},650);
+  setTimeout(()=>{
+    sp.style.display='none';
+    const lastAid=S.get('tw_last_aid');
+    const lastRid=S.get('tw_last_rid');
+    if(lastAid && lastRid && ATHLETES.find(a=>a.id===lastAid)?.races.find(r=>r.id===lastRid)){
+      launchApp(lastAid, lastRid);
+    } else {
+      showSelector();
+    }
+  },650);
 },600);
 </script>
 
