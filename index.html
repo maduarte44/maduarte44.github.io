@@ -166,6 +166,43 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 #m-save:active{opacity:.8;transform:scale(.98)}
 #m-saved{text-align:center;color:#52c9a0;font-size:14px;font-weight:700;letter-spacing:1.5px;padding:10px 0;display:none}
 
+/* EDIT MODE */
+.m-header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px}
+.m-header-row .m-day{margin-bottom:0}
+.m-edit-btn{background:none;border:1px solid #2a2a3e;border-radius:8px;color:#5a5a8a;font-size:12px;font-weight:700;padding:4px 10px;cursor:pointer;flex-shrink:0;transition:all .15s;font-family:'Inter',sans-serif;letter-spacing:.5px;line-height:1.5}
+.m-edit-btn:active{background:#1a1a28}
+.m-edit-btn.active{color:#7b9cf5;border-color:#7b9cf566;background:#0e0e22}
+.edit-sec-lbl{font-size:10px;font-weight:700;color:#888;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
+.edit-type-row{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:14px}
+.edit-type-btn{padding:7px 2px;border-radius:8px;border:1px solid #252530;background:#0d0d12;color:#555;font-size:9px;font-weight:700;letter-spacing:.3px;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;text-align:center}
+.edit-type-btn:active{transform:scale(.94)}
+.edit-type-btn.sel{border-color:var(--sel-c,#7b9cf5);color:var(--sel-c,#7b9cf5);background:color-mix(in srgb,var(--sel-c,#7b9cf5) 10%,transparent)}
+.edit-lbl{font-size:10px;color:var(--sub);font-family:'JetBrains Mono',monospace;margin-bottom:4px;letter-spacing:.5px;text-transform:uppercase}
+.edit-input{width:100%;background:#1a1a22;border:1px solid #2a2a35;border-radius:8px;color:#e0e0f0;padding:10px 12px;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border .15s;box-sizing:border-box}
+.edit-input:focus{border-color:#555}
+.edit-input-sm{width:100px;background:#1a1a22;border:1px solid #2a2a35;border-radius:8px;color:#e0e0f0;padding:10px 12px;font-size:16px;font-family:'JetBrains Mono',monospace;outline:none;transition:border .15s;text-align:center}
+.edit-input-sm:focus{border-color:#555}
+.edit-textarea{width:100%;background:#1a1a22;border:1px solid #2a2a35;border-radius:8px;color:#e0e0f0;padding:10px 12px;font-size:13px;font-family:'Inter',sans-serif;outline:none;resize:none;line-height:1.55;transition:border .15s;box-sizing:border-box}
+.edit-textarea:focus{border-color:#555}
+.edit-field-mb{margin-bottom:12px}
+.edit-ex-row{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+.edit-ex-name{flex:1;background:#1a1a22;border:1px solid #252535;border-radius:8px;color:#e0e0f0;padding:9px 10px;font-size:13px;font-family:'Inter',sans-serif;outline:none;min-width:0;transition:border .15s}
+.edit-ex-name:focus{border-color:#555}
+.edit-ex-reps{width:86px;background:#1a1a22;border:1px solid #252535;border-radius:8px;color:#aaa;padding:9px 6px;font-size:11px;font-family:'JetBrains Mono',monospace;outline:none;text-align:center;transition:border .15s;flex-shrink:0}
+.edit-ex-reps:focus{border-color:#555}
+.edit-ex-del{background:none;border:1px solid #2a1a1a;border-radius:8px;color:#f4634a55;padding:9px 10px;cursor:pointer;font-size:15px;flex-shrink:0;transition:all .15s;line-height:1}
+.edit-ex-del:active{background:#1a0808;color:#f4634a}
+.edit-add-ex{width:100%;padding:9px;background:none;border:1px dashed #252535;border-radius:8px;color:#555;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;font-family:'Inter',sans-serif;margin-bottom:14px;transition:all .15s}
+.edit-add-ex:active{background:#111118}
+.edit-save-btn{width:100%;padding:13px;border-radius:12px;border:none;background:linear-gradient(135deg,#0a2418,#1a4030);color:#52c9a0;font-size:14px;font-weight:700;letter-spacing:1px;font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s;margin-bottom:8px}
+.edit-save-btn:active{opacity:.8;transform:scale(.98)}
+.edit-cancel-btn{width:100%;padding:10px;background:none;border:1px solid #1e1e2e;border-radius:10px;color:#666;font-size:12px;font-weight:700;letter-spacing:1px;font-family:'Inter',sans-serif;cursor:pointer;margin-bottom:8px;transition:background .15s}
+.edit-cancel-btn:active{background:#111118}
+.edit-restore-btn{width:100%;padding:10px;background:none;border:1px solid #2a1818;border-radius:10px;color:#f4634a55;font-size:11px;font-weight:700;letter-spacing:.5px;font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s}
+.edit-restore-btn:active{color:#f4634a;border-color:#f4634a55}
+/* Override indicator on day card */
+.override-dot{width:7px;height:7px;border-radius:50%;background:#7b9cf5;position:absolute;bottom:9px;right:10px;opacity:.65;box-shadow:0 0 4px #7b9cf566}
+
 /* FUERZA exercises */
 .m-sets-badge{display:inline-flex;align-items:center;gap:6px;background:var(--cf-ch);color:var(--cf-tx);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:14px;font-family:'JetBrains Mono',monospace}
 .ex-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
@@ -383,7 +420,10 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 <div id="modal-overlay" onclick="closeModal(event)">
   <div id="modal">
     <div class="m-handle"></div>
-    <div class="m-day" id="m-day"></div>
+    <div class="m-header-row">
+      <div class="m-day" id="m-day"></div>
+      <button class="m-edit-btn" id="m-edit-btn" onclick="openEditMode()">✏️ Editar</button>
+    </div>
     <div id="m-title"></div>
     <div id="m-chips"></div>
     <div id="m-desc"></div>
@@ -732,6 +772,7 @@ const TODAY=new Date().toLocaleDateString('en-CA',{timeZone:'America/Santiago'})
 let st={
   athleteId:null,raceId:null,raceDate:null,weeks:[],
   weekIdx:0,tab:'cal',reactions:{},logs:{},selected:null,modalDay:null,
+  overrides:{},
   chartKm:null,chartT:null,
   paces:{easy:400,fast:300}, // sec/km defaults: 6:40 easy, 5:00 fast
   pacesSet:false,
@@ -798,6 +839,7 @@ function launchApp(aid,rid){
   if(savedW)st.weeks=savedW;
   st.reactions=S.get(`tw_rxn_${aid}_${rid}`)||{};
   st.logs=S.get(`tw_logs_${aid}_${rid}`)||{};
+  st.overrides=S.get(`tw_overrides_${aid}_${rid}`)||{};
   // Load paces
   const savedPaces=S.get(`tw_paces_${aid}_${rid}`);
   if(savedPaces){st.paces=savedPaces;st.pacesSet=true;}
@@ -897,7 +939,8 @@ function renderCal(){
         ${rightContent}
         <div class="card-reacts">${rxnBtns}</div>
       </div>
-      ${log?.distance?'<div class="log-dot"></div>':''}`;
+      ${log?.distance?'<div class="log-dot"></div>':''}
+      ${st.overrides[day.id]?'<div class="override-dot" title="Editado"></div>':''}`;
 
     let pressTimer;
     card.addEventListener('touchstart',()=>{pressTimer=setTimeout(()=>{if(st.selected===null){st.selected=i;renderCal();navigator.vibrate&&navigator.vibrate(60);}},500);},{passive:true});
@@ -1042,6 +1085,13 @@ function calcPace(){
 function openModal(i){
   const day=st.weeks[st.weekIdx].days[i];
   st.modalDay=day;
+  // Restore view-mode elements (may have been hidden in edit mode)
+  document.getElementById('m-title').style.display='';
+  document.getElementById('m-chips').style.display='';
+  document.getElementById('m-desc').style.display='';
+  const editBtn=document.getElementById('m-edit-btn');
+  editBtn.style.display='';
+  editBtn.classList.toggle('active',!!st.overrides[day.id]);
   const ts=TYPE[day.type];
   const log=st.logs[day.id];
   const rxn=st.reactions[day.id];
@@ -1116,6 +1166,185 @@ function closeModal(e){
   document.getElementById('modal-overlay').style.display='none';
   document.getElementById('modal-overlay').classList.remove('open');
   st.modalDay=null;
+}
+
+// ══════════════════════════════════════════════════
+// EDIT MODE
+// ══════════════════════════════════════════════════
+function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+let _editExercises=[];
+let _editCurrentType='';
+
+function openEditMode(){
+  if(!st.modalDay)return;
+  const day=st.modalDay;
+  _editExercises=day.exercises?JSON.parse(JSON.stringify(day.exercises)):[];
+  _editCurrentType=day.type;
+  // Hide view-mode elements
+  document.getElementById('m-title').style.display='none';
+  document.getElementById('m-chips').style.display='none';
+  document.getElementById('m-desc').style.display='none';
+  document.getElementById('m-edit-btn').style.display='none';
+  document.getElementById('m-body').innerHTML=_renderEditForm(day);
+}
+
+function _renderEditForm(day){
+  const types=['SUAVE','MEDIO','INTENSO','FUERZA','DESCANSO'];
+  const typeBtns=types.map(t=>{
+    const c=TYPE[t].tx;
+    const sel=t===_editCurrentType;
+    return `<button class="edit-type-btn${sel?' sel':''}" style="--sel-c:${c}" data-type="${t}" onclick="editSelectType('${t}')">${t}</button>`;
+  }).join('');
+  const hasOverride=!!st.overrides[day.id];
+  return `
+    <div class="edit-sec-lbl">TIPO DE ENTRENAMIENTO</div>
+    <div class="edit-type-row">${typeBtns}</div>
+    <div id="edit-fields">${_renderEditFields(_editCurrentType,day)}</div>
+    <button class="edit-save-btn" onclick="saveEdit()">✓ GUARDAR CAMBIOS</button>
+    <button class="edit-cancel-btn" onclick="closeEditMode()">Cancelar</button>
+    ${hasOverride?`<button class="edit-restore-btn" onclick="restoreOriginal()">↺ Restaurar entrenamiento original</button>`:''}`;
+}
+
+function _renderEditFields(type,day){
+  if(type==='FUERZA'){
+    return `
+      <div class="edit-lbl edit-field-mb" style="margin-bottom:4px">SESIÓN</div>
+      <input class="edit-input edit-field-mb" id="edit-session" value="${escHtml(day.session||'')}" placeholder="Nombre de la sesión">
+      <div class="edit-lbl" style="margin-bottom:4px">SERIES</div>
+      <input class="edit-input-sm edit-field-mb" id="edit-sets" type="number" min="1" max="10" value="${day.sets||3}" inputmode="numeric">
+      <div class="edit-lbl" style="margin-top:10px;margin-bottom:4px">NOTAS</div>
+      <textarea class="edit-textarea edit-field-mb" id="edit-desc" rows="3" placeholder="Descripción...">${escHtml(day.desc||'')}</textarea>
+      <div class="edit-lbl" style="margin-bottom:8px">EJERCICIOS</div>
+      <div id="edit-ex-list">${_renderExList()}</div>
+      <button class="edit-add-ex" onclick="editAddEx()">+ Agregar ejercicio</button>`;
+  }else{
+    const showKm=type!=='DESCANSO';
+    return `
+      <div class="edit-lbl" style="margin-bottom:4px">SESIÓN</div>
+      <input class="edit-input edit-field-mb" id="edit-session" value="${escHtml(day.session||'')}" placeholder="Nombre de la sesión">
+      ${showKm?`<div class="edit-lbl" style="margin-bottom:4px">DISTANCIA (km)</div>
+      <input class="edit-input-sm edit-field-mb" id="edit-km" type="number" min="0" step="0.5" value="${day.km||''}" placeholder="0" inputmode="decimal">`:''}
+      <div class="edit-lbl" style="margin-top:${showKm?10:0}px;margin-bottom:4px">DESCRIPCIÓN</div>
+      <textarea class="edit-textarea edit-field-mb" id="edit-desc" rows="4" placeholder="Descripción del entrenamiento...">${escHtml(day.desc||'')}</textarea>`;
+  }
+}
+
+function _renderExList(){
+  if(!_editExercises.length)return'<div style="font-size:12px;color:#444;padding:4px 0 10px">Sin ejercicios. Agrega uno abajo.</div>';
+  return _editExercises.map((ex,i)=>`
+    <div class="edit-ex-row">
+      <input class="edit-ex-name" value="${escHtml(ex.name)}" placeholder="Ejercicio" oninput="_editExercises[${i}].name=this.value">
+      <input class="edit-ex-reps" value="${escHtml(ex.reps)}" placeholder="reps" oninput="_editExercises[${i}].reps=this.value">
+      <button class="edit-ex-del" onclick="editExDel(${i})">×</button>
+    </div>`).join('');
+}
+
+function editSelectType(t){
+  if(!st.modalDay)return;
+  // Capture current field values before switching
+  const prevType=_editCurrentType;
+  _editCurrentType=t;
+  // Update the modalDay type for rendering (doesn't persist yet)
+  const daySnap={...st.modalDay,
+    session:document.getElementById('edit-session')?.value??st.modalDay.session,
+    km:parseFloat(document.getElementById('edit-km')?.value)||st.modalDay.km,
+    desc:document.getElementById('edit-desc')?.value??st.modalDay.desc,
+    sets:parseInt(document.getElementById('edit-sets')?.value)||st.modalDay.sets,
+    type:t
+  };
+  // If switching to FUERZA and had no exercises, start fresh
+  if(t==='FUERZA'&&prevType!=='FUERZA'&&!_editExercises.length)_editExercises=[];
+  // Update type button styles
+  document.querySelectorAll('.edit-type-btn').forEach(btn=>{
+    const bt=btn.dataset.type;
+    btn.className='edit-type-btn'+(bt===t?' sel':'');
+    btn.style.setProperty('--sel-c',TYPE[bt].tx);
+  });
+  // Re-render fields
+  document.getElementById('edit-fields').innerHTML=_renderEditFields(t,daySnap);
+}
+
+function editAddEx(){
+  _editExercises.push({name:'',reps:''});
+  document.getElementById('edit-ex-list').innerHTML=_renderExList();
+  const inputs=document.querySelectorAll('.edit-ex-name');
+  if(inputs.length)inputs[inputs.length-1].focus();
+}
+
+function editExDel(i){
+  _editExercises.splice(i,1);
+  document.getElementById('edit-ex-list').innerHTML=_renderExList();
+}
+
+function saveEdit(){
+  if(!st.modalDay)return;
+  const day=st.modalDay;
+  const type=_editCurrentType;
+  const session=(document.getElementById('edit-session')?.value||'').trim()||day.session;
+  const desc=(document.getElementById('edit-desc')?.value||'').trim();
+  const km=type!=='FUERZA'&&type!=='DESCANSO'?parseFloat(document.getElementById('edit-km')?.value)||0:0;
+  const sets=type==='FUERZA'?parseInt(document.getElementById('edit-sets')?.value)||3:day.sets;
+  const exercises=type==='FUERZA'?_editExercises.filter(e=>e.name.trim()):undefined;
+
+  // Find actual day in st.weeks
+  let targetDay=null;
+  for(const w of st.weeks){for(const d of w.days){if(d.id===day.id){targetDay=d;break;}}if(targetDay)break;}
+  if(!targetDay)return;
+
+  // Save original if first edit
+  if(!st.overrides[day.id]){
+    st.overrides[day.id]={
+      session:targetDay.session,type:targetDay.type,km:targetDay.km,
+      desc:targetDay.desc,sets:targetDay.sets,
+      exercises:targetDay.exercises?JSON.parse(JSON.stringify(targetDay.exercises)):undefined
+    };
+  }
+
+  // Apply changes
+  targetDay.session=session;
+  targetDay.type=type;
+  targetDay.km=km;
+  targetDay.desc=desc;
+  if(sets!==undefined)targetDay.sets=sets;
+  if(exercises!==undefined)targetDay.exercises=exercises;
+
+  // Persist
+  S.set(`tw_weeks_${st.athleteId}_${st.raceId}`,st.weeks);
+  S.set(`tw_overrides_${st.athleteId}_${st.raceId}`,st.overrides);
+
+  // Close and refresh
+  st.modalDay=null;
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.getElementById('modal-overlay').style.display='none';
+  renderCal();
+}
+
+function closeEditMode(){
+  // Re-open modal in view mode with original (unsaved) data
+  const id=st.modalDay?.id;
+  if(!id)return;
+  let idx=-1;
+  const days=st.weeks[st.weekIdx].days;
+  idx=days.findIndex(d=>d.id===id);
+  if(idx>=0)openModal(idx);
+  else{document.getElementById('modal-overlay').classList.remove('open');document.getElementById('modal-overlay').style.display='none';}
+}
+
+function restoreOriginal(){
+  if(!st.modalDay||!st.overrides[st.modalDay.id])return;
+  const orig=st.overrides[st.modalDay.id];
+  let targetDay=null;
+  for(const w of st.weeks){for(const d of w.days){if(d.id===st.modalDay.id){targetDay=d;break;}}if(targetDay)break;}
+  if(!targetDay)return;
+  Object.assign(targetDay,orig);
+  delete st.overrides[st.modalDay.id];
+  S.set(`tw_weeks_${st.athleteId}_${st.raceId}`,st.weeks);
+  S.set(`tw_overrides_${st.athleteId}_${st.raceId}`,st.overrides);
+  st.modalDay=null;
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.getElementById('modal-overlay').style.display='none';
+  renderCal();
 }
 
 function reactModal(emoji){
