@@ -241,13 +241,13 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .pb-cta{font-size:11px;font-weight:700;color:#7b9cf5;letter-spacing:1px;flex-shrink:0}
 
 /* ── SYNC ── */
-#sync-btn{background:none;border:1px solid var(--border);color:var(--sub);width:32px;height:32px;border-radius:8px;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;position:relative}
-#sync-btn.synced{color:#52c9a0;border-color:#52c9a044}
-#sync-btn.syncing{color:#f5b731;border-color:#f5b73144;animation:spin .8s linear infinite}
-#sync-btn.error{color:#f4634a;border-color:#f4634a44}
+#sync-btn{position:relative}
+#sync-btn.synced{color:#52c9a0}
+#sync-btn.syncing{color:#f5b731;animation:spin .8s linear infinite}
+#sync-btn.error{color:#f4634a}
 @keyframes spin{to{transform:rotate(360deg)}}
-#sync-dot{position:absolute;top:-3px;right:-3px;width:7px;height:7px;border-radius:50%;background:#f5b731;display:none;border:1px solid var(--bg2)}
-#sync-btn.dirty #sync-dot{display:block}
+#sync-dot{position:absolute;top:0;right:-4px;width:7px;height:7px;border-radius:50%;background:#f5b731;display:none;border:1px solid var(--bg2)}
+#sync-btn.dirty #sync-dot{display:inline-block}
 #sync-modal{display:none;position:fixed;inset:0;z-index:200;background:#000a}
 #sync-modal.show{display:flex;align-items:flex-end}
 #sync-box{background:var(--bg2);border-top:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;animation:slideUp .25s ease;max-height:90dvh;overflow-y:auto}
@@ -325,8 +325,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
       <div class="logo-sub" id="race-sub"></div>
     </div>
     <div class="hdr-right">
-      <button id="sync-btn" onclick="openSyncModal()" title="Sincronizar con GitHub Gist">☁️<div id="sync-dot"></div></button>
-      <div class="pace-pill" id="pace-pill" onclick="openPaceModal(true)" title="Tu perfil de ritmos">
+<div class="pace-pill" id="pace-pill" onclick="openPaceModal(true)" title="Tu perfil de ritmos">
         <div class="pace-val"><div id="pp-easy">🟢 –:–</div><div id="pp-fast">🔴 –:–</div></div>
       </div>
       <button class="hdr-back" id="hdr-athlete" onclick="goSelector()">↩ Cambiar</button>
@@ -376,6 +375,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   <div id="tabbar">
     <button class="tab-btn active" id="tbtn-cal" onclick="switchTab('cal')"><span class="tab-icon">📅</span>CALENDARIO</button>
     <button class="tab-btn" id="tbtn-stats" onclick="switchTab('stats')"><span class="tab-icon">📊</span>ANALÍTICAS</button>
+    <button class="tab-btn" id="sync-btn" onclick="openSyncModal()" title="Sincronizar con GitHub Gist"><span class="tab-icon">☁️<span id="sync-dot"></span></span></button>
   </div>
 </div>
 
@@ -774,6 +774,7 @@ function launchApp(aid,rid){
   const race=athlete?.races.find(r=>r.id===rid);
   if(!race)return;
   st.athleteId=aid; st.raceId=rid; st.raceDate=race.date;
+  S.set('tw_last_aid',aid); S.set('tw_last_rid',rid);
   st.weeks=JSON.parse(JSON.stringify(race.weeks));
   const savedW=S.get(`tw_weeks_${aid}_${rid}`);
   if(savedW)st.weeks=savedW;
@@ -1436,7 +1437,16 @@ updateSyncBadge(false);
 setTimeout(()=>{
   const sp=document.getElementById('splash');
   sp.style.opacity='0';
-  setTimeout(()=>{sp.style.display='none';showSelector();},650);
+  setTimeout(()=>{
+    sp.style.display='none';
+    const lastAid=S.get('tw_last_aid');
+    const lastRid=S.get('tw_last_rid');
+    if(lastAid && lastRid && ATHLETES.find(a=>a.id===lastAid)?.races.find(r=>r.id===lastRid)){
+      launchApp(lastAid, lastRid);
+    } else {
+      showSelector();
+    }
+  },650);
 },600);
 </script>
 
