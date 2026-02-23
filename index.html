@@ -241,7 +241,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .pb-cta{font-size:11px;font-weight:700;color:#7b9cf5;letter-spacing:1px;flex-shrink:0}
 
 /* ── SYNC ── */
-#sync-btn{position:relative}
+#sync-btn{position:relative;background:transparent!important;flex:1 1 0!important;min-width:0;width:0;border:none!important;outline:none!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important}
 #sync-btn.synced{color:#52c9a0}
 #sync-btn.syncing{color:#f5b731;animation:spin .8s linear infinite}
 #sync-btn.error{color:#f4634a}
@@ -375,7 +375,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   <div id="tabbar">
     <button class="tab-btn active" id="tbtn-cal" onclick="switchTab('cal')"><span class="tab-icon">📅</span>CALENDARIO</button>
     <button class="tab-btn" id="tbtn-stats" onclick="switchTab('stats')"><span class="tab-icon">📊</span>ANALÍTICAS</button>
-    <button class="tab-btn" id="sync-btn" onclick="openSyncModal()" title="Sincronizar con GitHub Gist"><span class="tab-icon">☁️<span id="sync-dot"></span></span></button>
+    <button class="tab-btn" id="sync-btn" onclick="openSyncModal()" title="Sincronizar con GitHub Gist"><span class="tab-icon">☁️<span id="sync-dot"></span></span>NUBE</button>
   </div>
 </div>
 
@@ -575,7 +575,7 @@ function buildWeeks(){return [
       {name:"Movilidad de cadera",reps:"10 c/dir."},{name:"Estiramientos",reps:"40 seg c/u"}]),
     W("w8d6","2026-04-12","Dom 12 Abr","Descanso","DESCANSO",0,"Descanso completo."),
   ]},
-  {num:9,dates:"13–19 Abr",phase:"PICO",totalKm:66,days:[
+  {num:9,dates:"13–19 Abr",phase:"PEAK",totalKm:66,days:[
     F("w9d0","2026-04-13","Lun 13 Abr","Fuerza – Potencia",4,"Explosividad para subidas. 2min descanso entre series.",[
       {name:"Sentadilla explosiva",reps:"6"},{name:"Salto al cajón",reps:"6"},{name:"Hip thrust",reps:"8"},
       {name:"Lunge con salto",reps:"6 c/lado"},{name:"Plancha",reps:"50 seg"}]),
@@ -586,7 +586,7 @@ function buildWeeks(){return [
     W("w9d5","2026-04-18","Sáb 18 Abr","Largo trail 26km","INTENSO",26,"1200m D+. Simula barro. Trabaja técnica de bajada."),
     W("w9d6","2026-04-19","Dom 19 Abr","Descanso","DESCANSO",0,"Descanso. Hidratación y nutrición."),
   ]},
-  {num:10,dates:"20–26 Abr",phase:"PICO",totalKm:55,days:[
+  {num:10,dates:"20–26 Abr",phase:"PEAK",totalKm:55,days:[
     W("w10d0","2026-04-20","Lun 20 Abr","Rodaje suave","SUAVE",12,"6:40/km. Recupera del 26km."),
     W("w10d1","2026-04-21","Mar 21 Abr","Repeticiones largas","INTENSO",14,"WU 10min → 4×(6min a 5:00/km / 2min trote) → CD 10min."),
     W("w10d2","2026-04-22","Mié 22 Abr","Descanso","DESCANSO",0,"Descanso activo. Core en casa 20min."),
@@ -597,7 +597,7 @@ function buildWeeks(){return [
       {name:"Core antirotación",reps:"10 c/lado"},{name:"Propioceptivo",reps:"40 seg c/pie"}]),
     W("w10d6","2026-04-26","Dom 26 Abr","Descanso","DESCANSO",0,"Descanso completo."),
   ]},
-  {num:11,dates:"27 Abr – 3 May",phase:"PICO",totalKm:73,days:[
+  {num:11,dates:"27 Abr – 3 May",phase:"PEAK",totalKm:73,days:[
     F("w11d0","2026-04-27","Lun 27 Abr","Fuerza – Tren inferior",4,"Último bloque de alta carga. Consolida base muscular.",[
       {name:"Sentadilla búlgara",reps:"8 c/lado"},{name:"Hip thrust",reps:"8"},{name:"Peso muerto rumano",reps:"8"},
       {name:"Trabajo de tobillo",reps:"20 c/dir."},{name:"Plancha lateral",reps:"45 seg c/lado"}]),
@@ -619,7 +619,7 @@ function buildWeeks(){return [
       {name:"Estiramientos",reps:"40 seg c/u"},{name:"Activación de glúteo",reps:"15 c/lado"}]),
     W("w12d6","2026-05-10","Dom 10 May","Descanso","DESCANSO",0,"Descanso completo."),
   ]},
-  {num:13,dates:"11–17 May",phase:"PICO",totalKm:76,days:[
+  {num:13,dates:"11–17 May",phase:"PEAK",totalKm:76,days:[
     F("w13d0","2026-05-11","Lun 11 May","Fuerza – Mantenimiento",3,"Mantén el estímulo sin agotar. Carga moderada.",[
       {name:"Sentadilla",reps:"10"},{name:"Press de hombro",reps:"10"},{name:"Remo",reps:"10"},
       {name:"Core antirotación",reps:"10 c/lado"},{name:"Bird-dog",reps:"10 c/lado"}]),
@@ -630,7 +630,7 @@ function buildWeeks(){return [
     W("w13d5","2026-05-16","Sáb 16 May","Largo trail 32km","INTENSO",32,"1450m D+. Primer 32km. Ultra conservador los primeros 10km."),
     W("w13d6","2026-05-17","Dom 17 May","Descanso","DESCANSO",0,"Descanso completo. Recuperación absoluta."),
   ]},
-  {num:14,dates:"18–24 May",phase:"PICO",totalKm:57,days:[
+  {num:14,dates:"18–24 May",phase:"PEAK",totalKm:57,days:[
     W("w14d0","2026-05-18","Lun 18 May","Rodaje suave","SUAVE",13,"6:40/km. Movimiento suave tras el 32km."),
     W("w14d1","2026-05-19","Mar 19 May","Repeticiones largas","INTENSO",14,"WU 10min → 4×(6min a 5:00/km / 2min trote) → CD 10min."),
     W("w14d2","2026-05-20","Mié 20 May","Descanso","DESCANSO",0,"Descanso activo. Movilidad de cadera y tobillos."),
@@ -685,10 +685,10 @@ function buildWeeks(){return [
       {name:"Activación de glúteo",reps:"10 c/lado"},{name:"Activación de core",reps:"5 min"}]),
     W("w18d6","2026-06-21","Dom 21 Jun","Descanso","DESCANSO",0,"Carga de carbos gradual. Duerme temprano."),
   ]},
-  {num:"🏁",dates:"22–27 Jun",phase:"CARRERA",totalKm:47,days:[
-    W("wRd0","2026-06-22","Lun 22 Jun","Trote + strides","SUAVE",3,"20min trote suave + 4×15seg strides."),
+  {num:"🏁",dates:"22–27 Jun",phase:"CARRERA",totalKm:50,days:[
+    W("wRd0","2026-06-22","Lun 22 Jun","Trote suave 6km","SUAVE",6,"6:40–6:50/km. Activa las piernas para la semana de carrera. Plano y relajado."),
     W("wRd1","2026-06-23","Mar 23 Jun","Movilidad + logística","DESCANSO",0,"Prepara mochila y equipo. Activación ligera 15min."),
-    W("wRd2","2026-06-24","Mié 24 Jun","Descanso activo","DESCANSO",0,"Caminata 20–30min. Carga de carbos."),
+    W("wRd2","2026-06-24","Mié 24 Jun","Trote + strides","SUAVE",3,"20min trote suave + 4×15seg strides. Carga de carbos."),
     W("wRd3","2026-06-25","Jue 25 Jun","Descanso","DESCANSO",0,"Recoge dorsal. Duerme temprano."),
     W("wRd4","2026-06-26","Vie 26 Jun","Descanso pre-carrera","DESCANSO",0,"Descanso completo. Cena con carbos."),
     W("wRd5","2026-06-27","Sáb 27 Jun 🏁","CARRERA 44km","INTENSO",44,"1500m D+. ¡A correr! Sale al 70% los primeros 10km."),
@@ -726,7 +726,7 @@ const TYPE={
   FUERZA:  {bg:'#080e22',bd:'#7b9cf588',tx:'#7b9cf5',ch:'#0e1535'},
   DESCANSO:{bg:'#0e0e12',bd:'#252530',  tx:'#3a3a4a',ch:'#141420'},
 };
-const PHASE_C={'BASE':'#52c9a0','DESARROLLO':'#f5b731','PICO':'#f4634a','PEAK 🔺':'#f4634a','RECUPERACIÓN':'#a98be8','RECUPERACIÓN POST':'#a98be8','TAPER':'#7b9cf5','TAPER FINAL':'#7b9cf5','CARRERA':'#f5b731'};
+const PHASE_C={'BASE':'#52c9a0','DESARROLLO':'#f5b731','PEAK':'#f4634a','PEAK 🔺':'#f4634a','RECUPERACIÓN':'#a98be8','RECUPERACIÓN POST':'#a98be8','TAPER':'#7b9cf5','TAPER FINAL':'#7b9cf5','CARRERA':'#f5b731'};
 const TODAY=new Date().toLocaleDateString('en-CA',{timeZone:'America/Santiago'});
 
 let st={
