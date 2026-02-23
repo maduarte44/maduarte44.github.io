@@ -241,7 +241,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .pb-cta{font-size:11px;font-weight:700;color:#7b9cf5;letter-spacing:1px;flex-shrink:0}
 
 /* ── SYNC ── */
-#sync-btn{position:relative;background:none;border:none}
+#sync-btn{position:relative}
 #sync-btn.synced{color:#52c9a0}
 #sync-btn.syncing{color:#f5b731;animation:spin .8s linear infinite}
 #sync-btn.error{color:#f4634a}
@@ -1170,7 +1170,7 @@ document.getElementById('modal').addEventListener('touchend',e=>{if(e.changedTou
 // ANALYTICS
 // ══════════════════════════════════════════════════
 function renderStats(){
-  let totKm=0,totMins=0,totPlan=0;
+  let totKm=0,totMins=0,totPlan=0,adhPlan=0,adhKm=0;
   const kmData=[],timeData=[];
   st.weeks.forEach(w=>{
     let wkm=0,wm=0;
@@ -1179,13 +1179,17 @@ function renderStats(){
       if(l?.distance)wkm+=parseFloat(l.distance)||0;
       if(l?.th!==undefined)wm+=(l.th||0)*60+(l.tm||0)+(l.ts||0)/60;
       else if(l?.time){const p=l.time.split(':').map(Number);wm+=(p[0]||0)*60+(p[1]||0);}
+      if(d.date<TODAY&&d.type!=='DESCANSO'){
+        adhPlan+=d.km||0;
+        adhKm+=parseFloat(l?.distance||0)||0;
+      }
     });
     totKm+=wkm;totMins+=wm;totPlan+=w.totalKm;
     const lb=typeof w.num==='number'?`S${w.num}`:'🏁';
     kmData.push({lb,plan:w.totalKm,real:Math.round(wkm*10)/10});
     timeData.push({lb,m:Math.round(wm)});
   });
-  const adh=totPlan?Math.round(totKm/totPlan*100):0;
+  const adh=adhPlan?Math.round(adhKm/adhPlan*100):0;
   const semAct=st.weeks.filter(w=>w.days.some(d=>{const l=st.logs[d.id];return l?.distance||l?.time;})).length;
   const fmt=m=>m>=60?`${Math.floor(m/60)}h ${Math.round(m%60)}m`:`${Math.round(m)}m`;
   document.getElementById('stat-grid').innerHTML=`
