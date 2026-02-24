@@ -2080,23 +2080,30 @@ IDs de días: patrón wNdM (N=semana, M=índice). Fechas en YYYY-MM-DD.`;
 }
 
 function migrateStorage(){
-  if(S.get('tw_migrated')) return;
-
   const oldRid='torrencial44k', oldAid='mauro';
 
-  // 1. Migrate old key format (tw_*_mauro_torrencial44k → tw_*_torrencial44k)
-  const keyMap=['weeks','logs','rxn','overrides','paces','title'];
-  keyMap.forEach(k=>{
-    const oldKey=`tw_${k}_${oldAid}_${oldRid}`;
-    const newKey=`tw_${k}_${oldRid}`;
-    const val=S.get(oldKey);
-    if(val!==null){
-      if(S.get(newKey)===null) S.set(newKey,val);
-      try{ localStorage.removeItem(oldKey); }catch(e){}
+  // Step 1: Migrate old key format (runs only once)
+  if(!S.get('tw_migrated')){
+    const keyMap=['weeks','logs','rxn','overrides','paces','title'];
+    keyMap.forEach(k=>{
+      const oldKey=`tw_${k}_${oldAid}_${oldRid}`;
+      const newKey=`tw_${k}_${oldRid}`;
+      const val=S.get(oldKey);
+      if(val!==null){
+        if(S.get(newKey)===null) S.set(newKey,val);
+        try{ localStorage.removeItem(oldKey); }catch(e){}
+      }
+    });
+    if(!S.get('tw_last_rid')){
+      S.set('tw_last_rid', oldRid);
+      S.set('tw_last_aid', 'mauricio');
     }
-  });
+    S.set('tw_migrated',true);
+    console.log('[Migration] Claves antiguas migradas');
+  }
 
-  // 2. Seed torrencial44k into tw_races if not already there
+  // Step 2: Seed torrencial44k into tw_races (runs every time until done)
+  // This is separate from tw_migrated so it catches users who ran the old migration
   const existing=S.get('tw_races')||[];
   if(!existing.find(r=>r.id===oldRid)){
     const weeks=S.get(`tw_weeks_${oldRid}`)||buildWeeks();
@@ -2110,16 +2117,9 @@ function migrateStorage(){
       weeks
     });
     S.set('tw_races',existing);
+    if(!S.get('tw_last_rid')) S.set('tw_last_rid', oldRid);
+    console.log('[Migration] Torrencial 44k sembrada en tw_races');
   }
-
-  // 3. Ensure last_rid is set
-  if(!S.get('tw_last_rid')){
-    S.set('tw_last_rid', oldRid);
-    S.set('tw_last_aid', 'mauricio');
-  }
-
-  console.log('[Migration] Torrencial 44k migrada a tw_races');
-  S.set('tw_migrated',true);
 }
 migrateStorage();
 
