@@ -1863,7 +1863,8 @@ document.addEventListener('click', e=>{
 
 // Mark dirty on any S.set call — patch S
 const _origSset = S.set.bind(S);
-S.set = function(k,v){ _origSset(k,v); if(syncGetPAT()) updateSyncBadge(true); };
+const SYNC_SKIP_KEYS=/^tw_(last_rid|last_aid|migrated|sync_pat|sync_gist)$/;
+S.set = function(k,v){ _origSset(k,v); if(syncGetPAT()&&!SYNC_SKIP_KEYS.test(k)) updateSyncBadge(true); };
 
 // Init badge on load
 updateSyncBadge(false);
