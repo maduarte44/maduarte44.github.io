@@ -303,7 +303,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .settings-race-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
 .settings-race-row:active{transform:scale(.98)}
 .settings-race-active{border-color:#52c9a044;background:#0a1e14}
-.settings-del-btn{background:none;border:1px solid var(--border);color:var(--sub);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center}
+.settings-del-btn{background:none;border:1px solid #f4634a44;color:#f4634a;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.settings-del-btn:active{background:#1e0a07}
 .settings-new-race-btn{width:100%;padding:14px;background:none;border:1px dashed var(--accent);color:var(--accent);border-radius:12px;font-size:14px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;margin-top:4px;margin-bottom:2px;transition:all .15s}
 .settings-new-race-btn:active{background:rgba(123,156,245,.1)}
 
@@ -652,28 +653,17 @@ const EX={
 // ══════════════════════════════════════════════════
 // ATHLETES + RACES DATA
 // ══════════════════════════════════════════════════
-const ATHLETES=[{
-  id:'mauricio',name:'Mauricio',avatar:'🏔',
-  races:[{
-    id:'torrencial44k',name:'Torrencial 44k',
-    date:'2026-06-27',distance:44,elevation:1500,
-    defaultTitle:'⛰ Torrencial 44k',
-    weeks: buildWeeks()
-  }]
-}];
+const ATHLETES=[{id:'mauricio',name:'Mauricio',avatar:'🏔',races:[]}];
 
 // ── Multi-race helpers ──────────────────────────────────────
 function getAllRaces(){
-  // Merge hardcoded races + user-added races from localStorage
-  const base=ATHLETES[0].races;
-  const custom=S.get('tw_races')||[];
-  return [...base,...custom];
+  return S.get('tw_races')||[];
 }
 function getActiveRaceId(){
   const saved=S.get('tw_last_rid');
   if(saved) return saved;
-  const today=new Date();
   const all=getAllRaces();
+  const today=new Date();
   const upcoming=all.filter(r=>new Date(r.date)>=today);
   return upcoming.length?upcoming[0].id:all[all.length-1]?.id;
 }
@@ -948,7 +938,7 @@ function openSettings(){
     const daysLeft=Math.ceil((new Date(r.date)-new Date())/86400000);
     const isActive=r.id===st.raceId;
     const badge=daysLeft>0?`${daysLeft}d`:'🏁';
-    const isCustom=!ATHLETES[0].races.find(x=>x.id===r.id);
+    const canDelete=getAllRaces().length>1; // can delete as long as at least one remains
     return `<div class="settings-race-row${isActive?' settings-race-active':''}" onclick="closeSettings();launchApp('mauricio','${r.id}')">
       <div>
         <div class="settings-row-label">${r.name}${isActive?'<span style="color:#52c9a0;font-size:10px;font-weight:600;margin-left:6px">● ACTIVA</span>':''}</div>
@@ -956,7 +946,7 @@ function openSettings(){
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:12px;font-weight:700;color:#f5b731">${badge}</span>
-        ${isCustom?`<button class="settings-del-btn" onclick="event.stopPropagation();deleteRace('${r.id}')">✕</button>`:''}
+        ${canDelete?`<button class="settings-del-btn" onclick="event.stopPropagation();deleteRace('${r.id}')">🗑</button>`:''}
       </div>
     </div>`;
   }).join('');
@@ -978,18 +968,32 @@ function openSettings(){
   document.getElementById('settings-panel').classList.remove('hidden');
 }
 function deleteRace(rid){
-  if(!confirm('¿Eliminar esta carrera y todos sus datos?'))return;
-  const custom=(S.get('tw_races')||[]).filter(r=>r.id!==rid);
-  S.set('tw_races',custom);
+  const all=getAllRaces();
+  if(all.length<=1){ alert('No puedes eliminar tu única carrera.'); return; }
+  const race=getRaceById(rid);
+  if(!confirm(`¿Eliminar "${race?.name}" y todos sus datos de entrenamiento?\n\nEsta acción no se puede deshacer.`)) return;
+
+  // Remove from tw_races
+  const updated=all.filter(r=>r.id!==rid);
+  S.set('tw_races',updated);
+
+  // Wipe all associated data
   ['weeks','logs','rxn','overrides','paces','title'].forEach(k=>{
-    try{localStorage.removeItem(`tw_${k}_${rid}`);}catch(e){}
+    try{ localStorage.removeItem(`tw_${k}_${rid}`); }catch(e){}
   });
+
+  // If deleted the active race, switch to another one
+  if(st.raceId===rid){
+    closeSettings();
+    launchApp('mauricio', updated[0].id);
+    return;
+  }
   openSettings();
 }
 function closeSettings(){
   document.getElementById('settings-panel').classList.add('hidden');
 }
-function showSelector(){ launchApp('mauricio', getActiveRaceId()||'torrencial44k'); }
+function showSelector(){ const rid=getActiveRaceId(); if(rid) launchApp('mauricio',rid); else openOnboardingWizard(); }
 function goSelector(){ showSelector(); }
 
 function launchApp(aid,rid){
@@ -2077,26 +2081,44 @@ IDs de días: patrón wNdM (N=semana, M=índice). Fechas en YYYY-MM-DD.`;
 
 function migrateStorage(){
   if(S.get('tw_migrated')) return;
+
   const oldRid='torrencial44k', oldAid='mauro';
+
+  // 1. Migrate old key format (tw_*_mauro_torrencial44k → tw_*_torrencial44k)
   const keyMap=['weeks','logs','rxn','overrides','paces','title'];
-  let migrated=false;
   keyMap.forEach(k=>{
     const oldKey=`tw_${k}_${oldAid}_${oldRid}`;
     const newKey=`tw_${k}_${oldRid}`;
     const val=S.get(oldKey);
     if(val!==null){
-      // Only set new key if it doesn't already have data
       if(S.get(newKey)===null) S.set(newKey,val);
       try{ localStorage.removeItem(oldKey); }catch(e){}
-      migrated=true;
     }
   });
-  // Also ensure tw_last_rid is set for the base race if nothing is saved
-  if(!S.get('tw_last_rid') && migrated){
-    S.set('tw_last_rid', 'torrencial44k');
+
+  // 2. Seed torrencial44k into tw_races if not already there
+  const existing=S.get('tw_races')||[];
+  if(!existing.find(r=>r.id===oldRid)){
+    const weeks=S.get(`tw_weeks_${oldRid}`)||buildWeeks();
+    existing.unshift({
+      id:oldRid,
+      name:'Torrencial 44k',
+      date:'2026-06-27',
+      distance:44,
+      elevation:1500,
+      defaultTitle:'⛰ Torrencial 44k',
+      weeks
+    });
+    S.set('tw_races',existing);
+  }
+
+  // 3. Ensure last_rid is set
+  if(!S.get('tw_last_rid')){
+    S.set('tw_last_rid', oldRid);
     S.set('tw_last_aid', 'mauricio');
   }
-  if(migrated) console.log('[Migration] Storage migrated to new schema');
+
+  console.log('[Migration] Torrencial 44k migrada a tw_races');
   S.set('tw_migrated',true);
 }
 migrateStorage();
@@ -2108,12 +2130,9 @@ setTimeout(()=>{
   setTimeout(()=>{
     sp.style.display='none';
     const lastAid=S.get('tw_last_aid')||'mauricio';
-    const lastRid=S.get('tw_last_rid');
+    const lastRid=S.get('tw_last_rid')||getActiveRaceId();
     if(lastRid){
       launchApp(lastAid, lastRid);
-    } else if(S.get('tw_migrated')){
-      // Migrated user but somehow no lastRid — load default
-      launchApp('mauricio','torrencial44k');
     } else {
       // Brand new user — onboarding
       openOnboardingWizard();
