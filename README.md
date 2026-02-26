@@ -1,169 +1,233 @@
-# Nadie Corre Solo ⛰
+# 🏔️ Nadie Corre Solo — Trail Running App
 
-App de entrenamiento para trail running. PWA mobile-first deployada en GitHub Pages como un único archivo HTML autocontenido.
-
----
-
-## Qué hace
-
-Gestiona un calendario de entrenamiento personalizado para preparar carreras de trail running. El plan cubre el ciclo completo: base → desarrollo → pico → taper → carrera → recuperación.
-
-**Calendario semanal**
-- Tarjetas por día con tipo de entrenamiento (SUAVE / MEDIO / INTENSO / FUERZA / DESCANSO)
-- Navegación entre semanas con swipe o flechas
-- Swap de entrenamientos entre días con long-press
-- Registro de entrenamiento real (distancia + tiempo)
-- Reacciones con emoji (😊 / 😐 / 😞)
-- Editor de entrenamientos planificados (tipo, nombre, km, ejercicios)
-- Indicador de overrides (entrenamiento editado vs. planificado original)
-
-**Analíticas**
-- Km planificados vs. ejecutados por semana
-- Tiempo total semanal
-- Gráficos de barras y líneas con Chart.js
-
-**Multi-carrera**
-- Perfil único de atleta con múltiples carreras en secuencia
-- Wizard de 3 pasos para agregar nuevas carreras (genera el plan con Claude API)
-- Eliminar carreras con todos sus datos asociados
-
-**Sincronización**
-- Sync cross-device vía GitHub Gist (Personal Access Token)
-- Indicador de estado en el botón ⚙️ del header (dirty / synced / error)
+Aplicación web progresiva (PWA) de planificación y seguimiento para un plan de entrenamiento de trail running de **20 semanas** orientado a completar la Torrencial 44k (44 km · 1.500 m D+) el **27 de junio de 2026**, con dos semanas de recuperación post-carrera incluidas.
 
 ---
 
-## Arquitectura
+## 📋 Descripción general
 
-### Un solo archivo
+La app es un único archivo HTML autocontenido que no requiere servidor, base de datos ni instalación. Toda la lógica, los estilos, los datos del plan y los assets (incluyendo el splash screen) están embebidos en el archivo. Los datos del usuario se persisten localmente mediante `localStorage` y pueden sincronizarse entre dispositivos vía GitHub Gist.
 
-Todo el código vive en `index.html`: HTML, CSS, JavaScript y datos embebidos. Sin build process, sin dependencias externas excepto Chart.js (CDN) y Google Fonts.
+Está diseñada para instalarse como PWA en Android (Chrome → *Añadir a pantalla de inicio*) y funcionar en modo offline completo gracias a un Service Worker integrado.
 
-### Storage (localStorage)
+---
+
+## 🗂️ Estructura del plan (20 semanas)
+
+| Semanas | Fase | Descripción |
+|---|---|---|
+| 1–3 | **BASE** | Construcción de base aeróbica, técnica y hábito de entrenamiento |
+| 4 | **RECUPERACIÓN** | Semana de asimilación y descanso activo |
+| 5–7 | **DESARROLLO** | Incremento progresivo de volumen e intensidad |
+| 8 | **RECUPERACIÓN** | Segunda semana de asimilación |
+| 9–11 | **PICO** | Cargas máximas, largo de 30–35 km |
+| 12 | **RECUPERACIÓN** | Recuperación activa pre-peak |
+| 13–15 | **PICO / PEAK 🔺** | Semanas de máximo volumen; largo pico de 35 km |
+| 16–17 | **TAPER** | Reducción progresiva de carga |
+| 18 | **TAPER FINAL** | Última semana, preparación mental y logística |
+| 🏁 | **Carrera** | Semana de carrera — 27 jun 2026 |
+| 19 | **RECUPERACIÓN POST** | Descanso activo; primer rodaje real el sábado (8 km) |
+| 20 | **RECUPERACIÓN POST** | Regreso gradual; largo suave de 8 km el sábado |
+
+**Volumen semanal:** oscila entre 11 km (recuperación post) y 78 km (peak), con una progresión media de ~10% semanal durante la fase de carga.
+
+---
+
+## 🏋️ Tipos de entrenamiento
+
+Cada sesión tiene un tipo visual codificado por color:
+
+| Tipo | Color | Descripción |
+|---|---|---|
+| 🟢 **SUAVE** | Verde | Rodajes fáciles, recuperación activa, ritmo conversacional (~6:40/km) |
+| 🔴 **INTENSO** | Naranja-rojo | Intervalos, repeticiones, largos de trail con desnivel |
+| 💪 **FUERZA** | Azul-violeta | Sesiones de tren inferior, core y propiocepción |
+| ⬛ **DESCANSO** | Gris oscuro | Descanso completo o movilidad libre |
+
+---
+
+## ✨ Funcionalidades
+
+### 📅 Calendario semanal
+- Navegación semana a semana con flechas o **swipe horizontal**.
+- Header compacto: muestra distancia y desnivel de la carrera, pill de ritmos 🟢/🔴, y botón ↩ cuadrado para cambiar de atleta/carrera.
+- Badge de fase activa (BASE, DESARROLLO, PICO…) con color correspondiente.
+- Contador regresivo a la carrera en el header.
+- Scroll automático al día actual al cargar.
+- Al reabrir la app, entra directamente en el último atleta y carrera usados (sin pasar por el selector).
+
+### 📝 Modal de entrenamiento
+Al tocar una tarjeta se abre el detalle con:
+- Descripción de la sesión y kilometraje planificado.
+- **Registro real:** distancia completada, tiempo y ritmo calculado en tiempo real.
+- **Reacción emoji** al entrenamiento (💪 🔥 😴 🤕).
+- Para sesiones de fuerza: lista de ejercicios con descripciones técnicas expandibles.
+
+### ↕️ Modo intercambio (Swap)
+- **Mantén pulsado** (~500 ms) una tarjeta para activar el modo intercambio.
+- Un banner amarillo indica que el modo está activo.
+- Toca otra tarjeta para intercambiar ambas sesiones dentro de la semana.
+- El intercambio es único: el modo se desactiva automáticamente tras cada swap.
+- Toca la tarjeta seleccionada para cancelar sin hacer cambios.
+
+### ⏱️ Perfil de ritmos
+- Configura tu **ritmo suave** (🟢) y **ritmo intenso** (🔴) en min/km.
+- La app estima la duración de cada sesión según el tipo.
+- Al guardar un entrenamiento real, el sistema aprende y ajusta tus ritmos automáticamente usando un promedio ponderado con el historial.
+- El pill de ritmos en el header muestra los valores en dos líneas compactas (una por ritmo), sin truncarse.
+
+### 📊 Estadísticas
+- **Progreso de km:** gráfica de línea con km planificados vs. completados por semana.
+- **Tiempo acumulado:** gráfica de barras con minutos de entrenamiento registrados.
+- Métricas globales: semanas activas, km totales completados, porcentaje de adherencia.
+- Distribución de reacciones emoji.
+
+### 🔤 Nombre de la app
+- El título "Nadie Corre Solo" en el header es editable con un solo toque. El nombre personalizado se guarda automáticamente.
+
+---
+
+## ☁️ Sincronización entre dispositivos (GitHub Gist)
+
+Los datos se sincronizan a través de un **Gist privado de GitHub**. No requiere servidor propio. El botón ☁️ está en la barra de navegación inferior.
+
+### Configuración inicial (dispositivo principal)
+
+1. Ve a [github.com/settings/tokens/new](https://github.com/settings/tokens/new).
+2. Dale un nombre (ej: *nadie-corre-solo*), selecciona **solo el scope `gist`**, y genera el token.
+3. En la app, toca el botón **☁️** en la barra inferior.
+4. Pega el token y pulsa **⬆ Subir** — la app crea automáticamente un Gist privado llamado `nadie-corre-solo-backup.json`.
+
+### Conectar un segundo dispositivo
+
+1. Introduce el mismo token en el nuevo dispositivo.
+2. Necesitas también el **Gist ID** — cópialo desde el primer dispositivo (aparece en el modal como `Gist: xxxxxxxx…`).
+3. Guarda el Gist ID en `localStorage` del nuevo dispositivo ejecutando en la consola del navegador:
+   ```js
+   localStorage.setItem('tw_sync_gist_id', 'TU_GIST_ID_COMPLETO')
+   ```
+4. Toca **☁️ → ⬇ Bajar** para traer todos los datos.
+
+### Flujo de uso diario
+
+| Acción | Cuándo |
+|---|---|
+| **⬆ Subir** | Después de registrar entrenamientos o hacer cambios |
+| **⬇ Bajar** | Al abrir la app en un dispositivo que no fue el último en editar |
+
+El botón ☁️ muestra un punto amarillo cuando hay cambios pendientes de subir, y verde tras sincronizar correctamente.
+
+### Seguridad
+
+- El token se guarda únicamente en `localStorage` del dispositivo, nunca pasa por un servidor intermedio.
+- Las llamadas van directamente a `api.github.com` desde el navegador.
+- El Gist es **privado** y el token tiene el scope mínimo posible (`gist`).
+
+---
+
+## 💾 Almacenamiento de datos
+
+Toda la persistencia utiliza `localStorage` con claves con namespace por atleta y carrera:
 
 | Clave | Contenido |
 |---|---|
-| `tw_profile` | Nombre, avatar, paces del atleta |
-| `tw_races` | Array de todas las carreras con sus semanas planificadas |
-| `tw_weeks_<raceId>` | Semanas con overrides aplicados |
-| `tw_logs_<raceId>` | Registros de entrenamientos ejecutados |
-| `tw_rxn_<raceId>` | Reacciones emoji por entrenamiento |
-| `tw_overrides_<raceId>` | Cambios al plan original |
-| `tw_paces_<raceId>` | Ritmo fácil y rápido en segundos/km |
-| `tw_title_<raceId>` | Título editable del header |
-| `tw_last_rid` | Última carrera activa (para auto-launch) |
-| `tw_migrated` | Flag de migración de schema antiguo |
-| `tw_sync_pat` | GitHub Personal Access Token |
-| `tw_sync_gist` | ID del Gist de sincronización |
-
-### Flujo de datos de carreras
-
-```
-tw_races (localStorage)
-  └── array de objetos carrera
-        ├── id, name, date, distance, elevation
-        └── weeks[] → días → entrenamientos planificados
-
-tw_weeks_<raceId>  ← overrides aplicados sobre weeks[]
-tw_logs_<raceId>   ← datos de ejecución real
-tw_rxn_<raceId>    ← reacciones
-tw_overrides_<raceId> ← registro de qué fue editado
-```
-
-Todas las carreras son equivalentes — no hay distinción entre la carrera inicial (Torrencial 44k) y las generadas por el wizard. `getAllRaces()` lee exclusivamente desde `tw_races`.
+| `tw_weeks_{athleteId}_{raceId}` | Semanas con posibles intercambios aplicados |
+| `tw_rxn_{athleteId}_{raceId}` | Reacciones emoji por sesión |
+| `tw_logs_{athleteId}_{raceId}` | Registros reales (distancia, tiempo) |
+| `tw_paces_{athleteId}_{raceId}` | Perfil de ritmos (suave e intenso) |
+| `tw_ph_{key}_{athleteId}_{raceId}` | Historial de ritmos para auto-aprendizaje |
+| `tw_title_{athleteId}_{raceId}` | Nombre personalizado de la app |
+| `tw_last_aid` / `tw_last_rid` | Último atleta y carrera usados (auto-inicio) |
+| `tw_sync_pat` | Personal Access Token de GitHub (solo local) |
+| `tw_sync_gist_id` | ID del Gist vinculado |
 
 ---
 
-## Onboarding y primera vez
+## 📱 Instalación como PWA (Android)
 
-Al abrir la app sin datos, se lanza el wizard de onboarding:
+1. Abre la URL del hosting en **Chrome para Android**.
+2. Toca el menú ⋮ → **"Añadir a pantalla de inicio"**.
+3. La app se instala con ícono propio, modo standalone (sin barra de navegación) y funciona sin conexión.
 
-1. **Tu perfil** — nombre + avatar (grid de emojis)
-2. **La carrera** — nombre, distancia, desnivel, fecha
-3. **Tu nivel** — ritmos (fácil/intenso), distancias referenciales, fecha de inicio del plan
-4. **Generando...** — llama a Claude API → guarda todo → lanza la app
-
-Para usuarios existentes (con `tw_migrated = true`), la app lanza directamente a la última carrera activa.
-
-Para testear el onboarding desde cero:
-```javascript
-localStorage.clear(); location.reload();
-```
+> El Service Worker hace cache de todos los recursos en la primera carga. Las sesiones posteriores funcionan completamente offline.
 
 ---
 
-## Migración automática
-
-`migrateStorage()` se ejecuta una vez al abrir la app y:
-
-1. Migra claves del schema antiguo (`tw_*_mauro_torrencial44k` → `tw_*_torrencial44k`)
-2. Siembra `torrencial44k` en `tw_races` desde `buildWeeks()` si no existe aún
-3. Setea `tw_last_rid` si estaba vacío
-
-Una vez ejecutada, marca `tw_migrated = true` y no vuelve a correr.
-
----
-
-## Tipos de entrenamiento
-
-| Tipo | Color | Tracking |
-|---|---|---|
-| SUAVE | Verde `#52c9a0` | Distancia + tiempo estimado |
-| MEDIO | Amarillo `#f5b731` | Distancia + tiempo estimado |
-| INTENSO | Rojo `#f4634a` | Distancia + tiempo estimado |
-| FUERZA | Azul `#7b9cf5` | Series + tarjetas de ejercicios |
-| DESCANSO | Gris | Sin tracking |
-
----
-
-## Fases del plan
-
-`BASE` → `DESARROLLO` → `PICO` → `TAPER` → `CARRERA` → `RECUPERACIÓN`
-
-El banner "¿Ya tienes tu próxima carrera?" aparece automáticamente en semanas de fase CARRERA o RECUPERACIÓN.
-
----
-
-## Generación de planes con Claude API
-
-El wizard llama a `https://api.anthropic.com/v1/messages` con el modelo `claude-sonnet-4-20250514` solicitando el plan en formato JSON estricto con el schema de `buildWeeks()`. El plan generado se guarda directamente en `tw_races`.
-
-La API key se inyecta a nivel del proxy de Claude.ai — no se necesita configurar nada en el cliente.
-
----
-
-## Sincronización GitHub Gist
-
-1. Crear un [Personal Access Token](https://github.com/settings/tokens) con scope `gist`
-2. Abrir ⚙️ → Sync → pegar el token
-3. **Subir** crea o actualiza un Gist privado con todas las claves `tw_*`
-4. **Bajar** restaura los datos desde el Gist en otro dispositivo
-
-El indicador de estado en ⚙️:
-- Sin borde → sync no configurado
-- Verde → sincronizado
-- Punto amarillo → hay cambios sin subir
-
----
-
-## Deployment
+## 🌐 Despliegue en GitHub Pages
 
 ```bash
-# Subir a GitHub Pages
-git add index.html
-git commit -m "update"
-git push origin main
+# Clonar el repositorio
+git clone https://github.com/maduarte44/maduarte44.github.io.git
+cd maduarte44.github.io
+
+# Copiar archivos actualizados
+cp ~/Downloads/index.html .
+cp ~/Downloads/README.md .
+
+# Publicar
+git add index.html README.md
+git commit -m "descripción del cambio"
+git push
 ```
 
-La app vive en `https://<usuario>.github.io/<repo>/`.
+La app queda disponible en `https://maduarte44.github.io` en 1–2 minutos.
 
-No hay build step, no hay node_modules, no hay servidor.
+> ⚠️ El Service Worker requiere **HTTPS** o `localhost`. Un archivo abierto como `file://` no activará el modo offline ni el manifest PWA.
 
 ---
 
-## Dependencias externas
+## 🛠️ Stack técnico
 
-- [Chart.js 4.4.0](https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js) — gráficos
-- [Inter](https://fonts.google.com/specimen/Inter) + [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono) — tipografía
-- Claude API (`claude-sonnet-4-20250514`) — generación de planes
-- GitHub Gist API — sincronización (opcional)
+| Componente | Tecnología |
+|---|---|
+| Estructura | HTML5, un solo archivo autocontenido |
+| Estilos | CSS custom properties, sin frameworks |
+| Lógica | Vanilla JavaScript (ES2020+) |
+| Gráficas | Chart.js 4.4 (CDN) |
+| Fuentes | Inter (UI principal) + JetBrains Mono (datos numéricos) |
+| Offline | Service Worker con cache-first strategy |
+| Instalación | Web App Manifest generado dinámicamente |
+| Persistencia | localStorage + GitHub Gist (sync opcional) |
+| Splash | Imagen JPEG embebida en base64, recortada sin bordes blancos |
+| Zona horaria | America/Santiago (Chile continental) |
+
+---
+
+## 🔧 Personalización
+
+Para adaptar la app a otro atleta o carrera, editar el objeto `ATHLETES` en el JavaScript embebido:
+
+```javascript
+const ATHLETES = [{
+  id: 'nombre-atleta',
+  name: 'Nombre Atleta',
+  races: [{
+    id: 'nombre-carrera-2026',
+    name: 'Nombre de la Carrera',
+    date: '2026-06-27',        // Fecha de carrera (YYYY-MM-DD)
+    km: 44,                    // Distancia en km
+    dplus: 1500,               // Desnivel positivo en metros
+    weeks: buildWeeks()        // Función que construye las semanas
+  }]
+}];
+```
+
+Las semanas se construyen con dos helpers:
+- `W(id, fecha, label, sesión, tipo, km, descripción)` — sesión de running
+- `F(id, fecha, label, series, descripción, [ejercicios])` — sesión de fuerza
+
+---
+
+## 📁 Archivos del proyecto
+
+```
+/
+├── index.html          # App completa (único archivo necesario para producción)
+└── README.md           # Este archivo
+```
+
+---
+
+## 📄 Licencia
+
+Uso personal. Sin licencia de distribución abierta.
